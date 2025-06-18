@@ -54,6 +54,7 @@ import prox.*
 prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, alpha));
 prox_ball_l2_conj = prox_conj(@(z, gamma) prox_ball_l2(z, b, epsilon));
 
+% Main loop
 for i = 1:iter
     x1_prev = x1;
     x1= prox_box(x1- gamma_x1 * (Phit(y1) + WDt(y2)), lower, upper);
@@ -65,8 +66,8 @@ for i = 1:iter
 
     y2 = prox_l1_conj(y2 + gamma_y2 * (WD(2 * x1 - x1_prev) - (2 * x2 - x2_prev)), gamma_y2);
 
-    relative_error(i) = norm(x1- x1_prev) / norm(x1_prev);
-    mse(i) = norm(x1- true_signal) / norm(true_signal);
+    relative_error(i) = norm(x1 - x1_prev) / norm(x1_prev);
+    mse(i) = norm(x1 - true_signal) / norm(true_signal);
 
     if mod(i, 100) == 0
         disp("iteration: " + num2str(i));

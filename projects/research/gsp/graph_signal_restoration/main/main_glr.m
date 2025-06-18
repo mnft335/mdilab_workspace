@@ -6,8 +6,8 @@ G = gsp_compute_fourier_basis(G);
 V = G.N;
 true_signal = G.org_signal;
 
-root_L = @(z) sqrt(G.e) .* G.U * z;
-root_Lt = @(z) G.U.' * sqrt(G.e) .* z;
+root_L = @(z) sqrt(G.e) .* G.U.' * z;
+root_Lt = @(z) G.U * (sqrt(G.e) .* z);
 
 % Observation matrix
 masking_rate = round(0.5 * V);
@@ -45,12 +45,12 @@ mse = zeros(iter, 1);
 import prox.*;
 
 prox_ball_l2_conj = prox_conj(@(z, gamma) prox_ball_l2(z, b, epsilon));
-prox_l2_conj = prox_conj(@(z, gamma) prox_l2(z, gamma, 1));
+prox_l2_conj = prox_conj(@(z, gamma) prox_l2(z, gamma, 1 / 2));
 
 % Main loop
 for i = 1:iter
     x1_prev = x1;
-    x1_prev = prox_box(x1 - gamma_x1 * (Phit(y1) + root_Lt(y2)), lower, upper);
+    x1 = prox_box(x1 - gamma_x1 * (Phit(y1) + root_Lt(y2)), lower, upper);
 
     y1 = prox_ball_l2_conj(y1 + gamma_y1 * Phi(2 * x1 - x1_prev), gamma_y1);
 
@@ -71,3 +71,4 @@ end
 
 plot_graph(G, true_signal, b, x1);
 plot_status(i, relative_error, mse);
+disp(mse(i));

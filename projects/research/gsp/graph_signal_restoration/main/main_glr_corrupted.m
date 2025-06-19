@@ -1,11 +1,18 @@
 clear;
 
 % Graph setup
-G_original = load("minnesota_graph.mat", "G");
-G = corrupt_graph(G_original.G, 1.0);
+% G_original = load("minnesota_graph.mat", "G");
+load(path_search("Rome"));
+true_signal = double(data(:, 1)) / double(max(data(:, 1)));
+G = gsp_graph(double(W), pos);
+G = gsp_adj2vec(G);
+weights = 10 * exp(- 10 * abs(G.Diff * true_signal));
+G = gsp_vec2adj(G.A, weights);
+G_original = gsp_graph(G, pos);
+G = corrupt_graph(G_original, @(z, i, j) corruption(z, i, j), 0.0);
 G = gsp_compute_fourier_basis(G);
 V = G.N;
-true_signal = G.org_signal;
+% true_signal = G.org_signal;
 
 root_L = @(z) sqrt(G.e) .* G.U.' * z;
 root_Lt = @(z) G.U * (sqrt(G.e) .* z);

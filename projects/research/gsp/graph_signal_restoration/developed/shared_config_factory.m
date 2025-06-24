@@ -3,9 +3,10 @@ function shared_config = shared_config_factory()
     gsp_start();
 
     load(path_search("Rome"));
-    shared_config.G = gsp_graph(double(W), pos);
-    shared_config.G = corrupt_graph(shared_config.G, @(z, i, j) corruption(z, i, j), 0.0);
+    W = corrupt_weights(double(W), @multiplicative_corruption, 0.2);
+    shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
+    shared_config.G = gsp_adj2vec(shared_config.G);
     shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
 
     masking_rate = 0.5;
@@ -31,7 +32,7 @@ function shared_config = shared_config_factory()
 end
 
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
-    is_converge = state.i >= max_iteration | state.residual < tolerance;
+    is_converge = state.i >= max_iteration | state.residual(state.i) < tolerance;
 end
 
 function state = before_iteration(state)
@@ -39,7 +40,7 @@ function state = before_iteration(state)
 end
 
 function state = after_iteration(state, true_signal)
-    state.residual = compute_relative_error([state.x{1}; state.y{1}; state.y{2}], [state.x_prev{1}; state.y_prev{1}; state.y_prev{2}]);
-    state.accuracy = compute_relative_error(state.x{1}, true_signal);
+    state.residual(state.i) = compute_relative_error([state.x{1}; state.y{1}; state.y{2}], [state.x_prev{1}; state.y_prev{1}; state.y_prev{2}]);
+    state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
     if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
 end

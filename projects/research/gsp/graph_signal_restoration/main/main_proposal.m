@@ -57,8 +57,8 @@ mse = zeros(iter, 1);
 % Proximal operators
 import prox.*
 
-prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, alpha));
 prox_ball_l2_conj = prox_conj(@(z, gamma) prox_ball_l2(z, b, epsilon));
+prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, alpha));
 prox_l2_conj = prox_conj(@(z, gamma) prox_l2(z, gamma, 1 - alpha));
 
 % Main loop

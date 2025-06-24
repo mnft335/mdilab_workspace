@@ -3,18 +3,21 @@ clear;
 gsp_start();
 
 % Graph setup
-load("minnesota_graph.mat")
+load(path_search("Rome"));
+G = gsp_graph(double(W), pos);
+G = gsp_compute_fourier_basis(G);
 G = gsp_adj2vec(G);
 V = G.N;
 E = G.Ne;
-true_signal = G.org_signal;
-W = diag(G.weights);
+W = @(z) G.weights .* z;
+Wt = @(z) G.weights .* z;
 D = G.Diff;
+true_signal = double(data(:, 1)) / double(max(data(:, 1)));
 
 % Observation matrix
-masking_rate = round(0.5 * V);
+masking_rate = 0.0;
 mask = ones(V, 1);
-if masking_rate ~= 0, mask(randperm(V, masking_rate)) = 0; end
+if masking_rate ~= 0, mask(randperm(V, round(masking_rate * V))) = 0; end
 
 Phi = @(z) mask .* z;
 Phit = @(z) mask .* z;
@@ -24,12 +27,12 @@ sigma = 0.25;
 b = Phi(true_signal + sigma * randn(size(true_signal)));
 
 % Parameters
-epsilon = norm(Phi(true_signal) - b);
 lower = 0;
 upper = 1;
-gamma_x1 = 0.1;
-gamma_y1 = 1 / 30 * gamma_x1;
-gamma_y2 = 1 / 30 * gamma_x1;
+epsilon = 0.9 * sqrt((1 - masking_rate) * V) * sigma;
+gamma_x1 = 1 / (1 + sqrt(max(G.e) * max(G.weights)));
+gamma_y1 = 1;
+gamma_y2 = 1 / (sqrt(max(G.e) * max(G.weights)));
 
 
 % Initialize variables
@@ -52,11 +55,11 @@ prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, 1));
 % Main loop
 for i = 1:iter
     x1_prev = x1;
-    x1 = prox_box(x1 - gamma_x1 * (Phit(y1) + D.' * y2), lower, upper);
+    x1 = prox_box(x1 - gamma_x1 * (Phit(y1) + D.' * Wt(y2)), lower, upper);
 
     y1 = prox_ball_l2_conj(y1 + gamma_y1 * Phi(2 * x1 - x1_prev), gamma_y1);
 
-    y2 = prox_l1_conj(y2 + gamma_y2 * W * D * (2 * x1 - x1_prev), gamma_y2);
+    y2 = prox_l1_conj(y2 + gamma_y2 * W(D * (2 * x1 - x1_prev)), gamma_y2);
 
     relative_error(i) = norm(x1 - x1_prev) / norm(x1_prev);
     mse(i) = norm(x1 - true_signal) / norm(true_signal);
@@ -71,5 +74,6 @@ for i = 1:iter
     end
 end
 
+disp(mse(i));
 plot_graph(G, true_signal, b, x1);
-plot_status(i, relative_error, mse);
+% plot_status(i, relative_error, mse);

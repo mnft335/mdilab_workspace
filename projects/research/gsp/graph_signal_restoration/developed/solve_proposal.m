@@ -28,9 +28,6 @@ function result = solve_proposal(shared_config, specific_config)
     algorithm_config.Gamma_y = {1, ...
                                 1 / (sqrt(shared_config.G.lmax * max(shared_config.G.weights)) + max(shared_config.G.weights)), ...
                                 1 / (sqrt(max(shared_config.G.weights)))};
-
-    % algorithm_config.Gamma_x = cellfun(@(x1) x1 * 0.90, algorithm_config.Gamma_x, "UniformOutput", false);
-    % algorithm_config.Gamma_y = cellfun(@(x1) x1 * 0.90, algorithm_config.Gamma_y, "UniformOutput", false);
     
     solver_config.stopping_criteria = shared_config.stopping_criteria;
     solver_config.before_iteration = shared_config.before_iteration;

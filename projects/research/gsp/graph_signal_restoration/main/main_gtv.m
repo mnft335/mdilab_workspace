@@ -1,10 +1,11 @@
 clear;
-
+rng(0);
 gsp_start();
 
 % Graph setup
 load(path_search("Rome"));
-G = gsp_graph(double(W), pos);
+W = corrupt_weights(double(W), @multiplicative_corruption, 0.0);
+G = gsp_graph(W, pos);
 G = gsp_compute_fourier_basis(G);
 G = gsp_adj2vec(G);
 V = G.N;
@@ -15,7 +16,7 @@ D = G.Diff;
 true_signal = double(data(:, 1)) / double(max(data(:, 1)));
 
 % Observation matrix
-masking_rate = 0.0;
+masking_rate = 0.5;
 mask = ones(V, 1);
 if masking_rate ~= 0, mask(randperm(V, round(masking_rate * V))) = 0; end
 
@@ -57,11 +58,16 @@ for i = 1:iter
     x1_prev = x1;
     x1 = prox_box(x1 - gamma_x1 * (Phit(y1) + D.' * Wt(y2)), lower, upper);
 
+    y1_prev = y1;
     y1 = prox_ball_l2_conj(y1 + gamma_y1 * Phi(2 * x1 - x1_prev), gamma_y1);
 
+    y2_prev = y2;
     y2 = prox_l1_conj(y2 + gamma_y2 * W(D * (2 * x1 - x1_prev)), gamma_y2);
 
-    relative_error(i) = norm(x1 - x1_prev) / norm(x1_prev);
+    test_residual(i) = norm([x1; y1; y2] - [x1_prev; y1_prev; y2_prev]);
+    if i > 1 & test_residual(i) >= test_residual(i - 1), disp("error!" + num2str(test_residual(i) - test_residual(i - 1))); end
+
+    relative_error(i) = compute_relative_error([x1; y1; y2], [x1_prev; y1_prev; y2_prev]);
     mse(i) = norm(x1 - true_signal) / norm(true_signal);
 
     if mod(i, 100) == 0

@@ -25,10 +25,10 @@ function state = solve_pds(problem_config, algorithm_config, solver_config)
     while 1
         state = config.before_iteration(config, state);
 
-        state.x_prev = cellfun(@(z) z, state.x, "UniformOUtput", false);
+        state.x_prev = state.x;
         state.x = update_x(config, state);
 
-        state.y_prev = cellfun(@(z) z, state.y, "UniformOutput", false);
+        state.y_prev = state.y;
         state.y = update_y(config, state);
 
         state = config.after_iteration(config, state);

@@ -19,6 +19,9 @@ function result = solve_glr(shared_config, specific_config)
     algorithm_config.Gamma_y = {1, ...
                                 1 / shared_config.G.lmax};
 
+    % algorithm_config.Gamma_x = cellfun(@(z) z * 0.8, algorithm_config.Gamma_x, "UniformOutput", false);
+    % algorithm_config.Gamma_y = cellfun(@(z) z * 0.8, algorithm_config.Gamma_y, "UniformOutput", false);
+
     solver_config.stopping_criteria = shared_config.stopping_criteria;
     solver_config.before_iteration = shared_config.before_iteration;
     solver_config.after_iteration = shared_config.after_iteration;

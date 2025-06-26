@@ -3,7 +3,7 @@ function shared_config = shared_config_factory()
     gsp_start();
 
     load(path_search("Rome"));
-    W = corrupt_weights(double(W), @multiplicative_corruption, 0.2);
+    W = corrupt_weights(double(W), @multiplicative_corruption, 0.0);
     shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
     shared_config.G = gsp_adj2vec(shared_config.G);
@@ -40,7 +40,9 @@ function state = before_iteration(state)
 end
 
 function state = after_iteration(state, true_signal)
-    state.residual(state.i) = compute_relative_error([state.x{1}; state.y{1}; state.y{2}], [state.x_prev{1}; state.y_prev{1}; state.y_prev{2}]);
+    state.residual(state.i) = compute_relative_error(vertcat(state.x{:}, state.y{:}), vertcat(state.x_prev{:}, state.y_prev{:}));
     state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
     if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
+    state.test_residual(state.i) = norm(vertcat(state.x{:}, state.y{:}) - vertcat(state.x_prev{:}, state.y_prev{:}));
+    if state.i > 1 & state.test_residual(state.i) >= state.test_residual(state.i - 1), disp("error!" + num2str(state.test_residual(state.i) - state.test_residual(state.i - 1))); end
 end

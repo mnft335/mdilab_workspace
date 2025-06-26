@@ -1,4 +1,4 @@
-clear;
+% clear;
 
 rng(0);
 
@@ -8,5 +8,9 @@ gtv_config = struct();
 proposal_config.alpha = 0.5;
 
 % glr_solved = solve_glr(shared_config, glr_config);
-% gtv_solved = solve_gtv(shared_config, gtv_config);
-proposal_solved = solve_proposal(shared_config, proposal_config);
+gtv_solved = solve_gtv(shared_config, gtv_config);
+% proposal_solved = solve_proposal(shared_config, proposal_config);
+
+% plot_graph(shared_config.G, shared_config.true_signal, shared_config.b, glr_solved.x{1});
+plot_graph(shared_config.G, shared_config.true_signal, shared_config.b, gtv_solved.x{1});
+% plot_graph(shared_config.G, shared_config.true_signal, shared_config.b, proposal_solved.x{1});

@@ -1,10 +1,10 @@
 clear;
-rng(0);
+rng(1);
 gsp_start();
 
 % Graph setup
 load(path_search("Rome"));
-W = corrupt_weights(double(W), @multiplicative_corruption, 0.0);
+W = corrupt_weights(double(W), @multiplicative_corruption, 0.1);
 G = gsp_graph(W, pos);
 G = gsp_compute_fourier_basis(G);
 G = gsp_adj2vec(G);
@@ -43,7 +43,7 @@ y2 = zeros(E, 1);
 
 % Stopping criteria
 iter = 20000;
-tolerance = 1e-5;
+tolerance = 1e-8;
 relative_error = zeros(iter, 1);
 mse = zeros(iter, 1);
 
@@ -64,8 +64,8 @@ for i = 1:iter
     y2_prev = y2;
     y2 = prox_l1_conj(y2 + gamma_y2 * W(D * (2 * x1 - x1_prev)), gamma_y2);
 
-    test_residual(i) = norm([x1; y1; y2] - [x1_prev; y1_prev; y2_prev]);
-    if i > 1 & test_residual(i) >= test_residual(i - 1), disp("error!" + num2str(test_residual(i) - test_residual(i - 1))); end
+    % test_residual(i) = norm([x1 / gamma_x1; y1 / gamma_y1; y2 / gamma_y2] - [x1_prev / gamma_x1; y1_prev / gamma_y1; y2_prev / gamma_y2]);
+    % if i > 1 & test_residual(i) >= test_residual(i - 1), disp("error!" + num2str(test_residual(i) - test_residual(i - 1))); end
 
     relative_error(i) = compute_relative_error([x1; y1; y2], [x1_prev; y1_prev; y2_prev]);
     mse(i) = norm(x1 - true_signal) / norm(true_signal);
@@ -81,5 +81,6 @@ for i = 1:iter
 end
 
 disp(mse(i));
-plot_graph(G, true_signal, b, x1);
+disp(norm(G.weights .* G.Diff * x1, 1));
+% plot_graph(G, true_signal, b, x1);
 % plot_status(i, relative_error, mse);

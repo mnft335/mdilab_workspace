@@ -4,7 +4,7 @@ gsp_start();
 
 % Graph setup
 load(path_search("Rome"));
-W = corrupt_weights(double(W), @multiplicative_corruption, 0.01);
+W = corrupt_weights(double(W), @multiplicative_corruption, 0.1);
 G = gsp_graph(W, pos);
 G = gsp_compute_fourier_basis(G);
 V = G.N;
@@ -63,8 +63,8 @@ for i = 1:iter
     
     relative_error(i) = norm(x1 - x1_prev) / norm(x1_prev);
     mse(i) = norm(x1 - true_signal) / norm(true_signal);
-    test_residual(i) = norm([x1; y1; y2] - [x1_prev; y1_prev; y2_prev]);
-    if i > 1 & test_residual(i) >= test_residual(i - 1), disp("error!"); end
+    % test_residual(i) = norm([x1; y1; y2] - [x1_prev; y1_prev; y2_prev]);
+    % if i > 1 & test_residual(i) >= test_residual(i - 1), disp("error!"); end
 
     if mod(i, 100) == 0
         disp("iteration: " + num2str(i));

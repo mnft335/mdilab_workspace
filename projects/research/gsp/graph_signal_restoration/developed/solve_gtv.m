@@ -15,9 +15,9 @@ function result = solve_gtv(shared_config, specific_config)
     algorithm_config.x_init = {zeros(shared_config.G.N, 1)};
     algorithm_config.y_init = {zeros(shared_config.G.N, 1), ...
                                zeros(shared_config.G.Ne, 1)};
-    algorithm_config.Gamma_x = {1 / (1 + sqrt(shared_config.G.lmax * max(shared_config.G.weights)))};
+    algorithm_config.Gamma_x = {1 / (1 + sqrt(max(eig(shared_config.G.Diff.' * diag(shared_config.G.weights) * diag(shared_config.G.weights) * shared_config.G.Diff))))};
     algorithm_config.Gamma_y = {1, ...
-                                1 / sqrt(shared_config.G.lmax * max(shared_config.G.weights))};
+                                1 / sqrt(max(eig(shared_config.G.Diff.' * diag(shared_config.G.weights) * diag(shared_config.G.weights) * shared_config.G.Diff)))};
 
     solver_config.stopping_criteria = shared_config.stopping_criteria;
     solver_config.before_iteration = shared_config.before_iteration;

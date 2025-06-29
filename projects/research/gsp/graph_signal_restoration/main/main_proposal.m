@@ -1,11 +1,11 @@
 clear;
-
+rng(1);
 gsp_start();
 
 % Graph setup
 load(path_search("Rome"));
-G = gsp_graph(double(W), pos);
-G = corrupt_graph(G, @(z, i, j) corruption(z, i, j), 0.0);
+W = corrupt_weights(double(W), @multiplicative_corruption, 0.1);
+G = gsp_graph(W, pos);
 G = gsp_compute_fourier_basis(G);
 G = gsp_adj2vec(G);
 V = G.N;
@@ -33,12 +33,12 @@ b = Phi(true_signal + sigma * randn(size(true_signal)));
 % Parameters
 lower = 0;
 upper = 1;
-alpha = 0.2;
-epsilon = 0.9 * sqrt((1 - masking_rate) * V) * sigma
-gamma_x1= 1 / (1 + sqrt(max(G.e) * max(G.weights)));
+alpha = 1;
+epsilon = 0.9 * sqrt((1 - masking_rate) * V) * sigma;
+gamma_x1= 1 / (1 + sqrt(max(eig(G.Diff.' * diag(G.weights) * diag(G.weights) * G.Diff))));
 gamma_x2= 1 / (max(G.weights) + sqrt(max(G.weights)));
 gamma_y1 = 1;
-gamma_y2 = 1 / (sqrt(max(G.e) * max(G.weights)));
+gamma_y2 = 1 / (sqrt(max(eig(G.Diff.' * diag(G.weights) * diag(G.weights) * G.Diff))) + max(G.weights));
 gamma_y3 = 1 / (sqrt(max(G.weights)));
 
 % Initialize variables
@@ -50,7 +50,7 @@ y3 = zeros(E, 1);
 
 % Stopping criteria
 iter = 20000;
-tolerance = 1e-5;
+tolerance = 1e-8;
 relative_error = zeros(iter, 1);
 mse = zeros(iter, 1);
 
@@ -92,5 +92,6 @@ for i = 1:iter
 end
 
 disp(mse(i));
-plot_graph(G, true_signal, b, x1);
+disp(alpha * norm(G.weights .* G.Diff * x1 - G.weights .* x2, 1) + (1 - alpha) * sum(G.weights .* x2).^2);
+% plot_graph(G, true_signal, b, x1);
 % plot_status(i, relative_error, mse);

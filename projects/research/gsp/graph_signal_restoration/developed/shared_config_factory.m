@@ -3,12 +3,13 @@ function shared_config = shared_config_factory()
     gsp_start();
 
     load(path_search("Rome"));
-    W = corrupt_weights(double(W), @multiplicative_corruption, 0.1);
-    % shared_config.G = gsp_graph(W, pos);
-    % shared_config.G = gsp_compute_fourier_basis(shared_config.G);
-    % shared_config.G = gsp_adj2vec(shared_config.G);
-    % isequal(shared_config.G.Diff.' * diag(shared_config.G.weights) * shared_config.G.Diff, shared_config.G.L)
-    % shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
+    W = corrupt_weights(double(W), @multiplicative_corruption, 0.3);
+    shared_config.G = gsp_graph(W, pos);
+    shared_config.G = gsp_compute_fourier_basis(shared_config.G);
+    shared_config.G = gsp_adj2vec(shared_config.G);
+    shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
+    G = gsp_incidence(shared_config.G, 'weighted');
+    norm(shared_config.G.L - shared_config.G.Diff.' * shared_config.G.Diff, 'fro')
 
     masking_rate = 0.5;
     mask = ones(shared_config.G.N, 1);
@@ -41,14 +42,13 @@ function state = before_iteration(state)
 end
 
 function state = after_iteration(config, state, true_signal)
-    state.residual(state.i) = compute_relative_error(vertcat(state.x{:}, state.y{:}), vertcat(state.x_prev{:}, state.y_prev{:}));
+    state.residual(state.i) = compute_pds_residual(config, state);
     state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
     if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
-    state.update_norm(state.i) = compute_update_norm(config, state);
-    if state.i > 1 & state.update_norm(state.i) > state.update_norm(state.i - 1), disp("error!" + num2str(state.update_norm(state.i) - state.update_norm(state.i - 1))); end
+    if i > 1 & state.residual(state.i) > state.residual(state.i - 1), disp("error!"); end
 end
 
-function result = compute_update_norm(config, state)
+function result = compute_pds_residual(config, state)
     primal_difference = cellfun(@(z1, z2) z1 - z2, state.x, state.x_prev, "UniformOutput", false);
     dual_difference = cellfun(@(z1, z2) z1 - z2, state.y, state.y_prev, "UniformOutput", false);
 

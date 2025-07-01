@@ -1,24 +1,23 @@
-function shared_config = shared_config_factory()
+function shared_config = shared_config_factory(experiment_config)
     
     gsp_start();
 
     load(path_search("Rome"));
-    W = corrupt_weights(double(W), @multiplicative_corruption, 0.3);
+    W = corrupt_weights(double(W), @multiplicative_corruption, experiment_config.corruption_rate);
     shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
     shared_config.G = gsp_adj2vec(shared_config.G);
     shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
     G = gsp_incidence(shared_config.G, 'weighted');
-    norm(shared_config.G.L - shared_config.G.Diff.' * shared_config.G.Diff, 'fro')
 
-    masking_rate = 0.5;
+    masking_rate = experiment_config.masking_rate;
     mask = ones(shared_config.G.N, 1);
     if masking_rate ~= 0, mask(randperm(shared_config.G.N, round(masking_rate * shared_config.G.N))) = 0; end
 
     shared_config.Phi = @(z) mask .* z;
     shared_config.Phit = @(z) mask .* z;
 
-    sigma = 0.25;
+    sigma = experiment_config.sigma;
     shared_config.b = shared_config.Phi(shared_config.true_signal + sigma * randn(size(shared_config.true_signal)));
 
     shared_config.lower = 0;
@@ -44,7 +43,7 @@ end
 function state = after_iteration(config, state, true_signal)
     state.residual(state.i) = compute_pds_residual(config, state);
     state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
-    if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
+    % if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
     if i > 1 & state.residual(state.i) > state.residual(state.i - 1), disp("error!"); end
 end
 

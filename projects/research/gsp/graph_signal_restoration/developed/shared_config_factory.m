@@ -3,12 +3,18 @@ function shared_config = shared_config_factory(experiment_config)
     gsp_start();
 
     load(path_search("Rome"));
-    W = corrupt_weights(double(W), @multiplicative_corruption, experiment_config.corruption_rate);
+    W = double(W);
+    % W = corrupt_weights(double(W), @multiplicative_corruption, experiment_config.corruption_rate);
     shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
     shared_config.G = gsp_adj2vec(shared_config.G);
     shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
-    G = gsp_incidence(shared_config.G, 'weighted');
+    shared_config.true_signal.' * shared_config.G.L * shared_config.true_signal
+    W = initialize_weights(W, shared_config.true_signal, 1);
+    G = gsp_graph(W, pos);
+    G = gsp_compute_fourier_basis(G);
+    G = gsp_adj2vec(G);
+    shared_config.true
 
     masking_rate = experiment_config.masking_rate;
     mask = ones(shared_config.G.N, 1);

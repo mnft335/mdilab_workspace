@@ -2,16 +2,13 @@ function shared_config = shared_config_factory(experiment_config)
     
     gsp_start();
 
-    for i = 1:10
     load(path_search("Rome"));
     shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
-    W = initialize_weights(double(W), shared_config.true_signal, 0.01 * i);
-    W = corrupt_weights(double(W), @multiplicative_corruption, experiment_config.corruption_rate);
+    W = initialize_weights(double(W), shared_config.true_signal, experiment_config.kernel_sigma);
+    W = corrupt_weights(W, @multiplicative_corruption, experiment_config.corruption_rate);
     shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
     shared_config.G = gsp_adj2vec(shared_config.G);
-    shared_config.true_signal.' * shared_config.G.L * shared_config.true_signal
-    end
 
     masking_rate = experiment_config.masking_rate;
     mask = ones(shared_config.G.N, 1);
@@ -28,7 +25,7 @@ function shared_config = shared_config_factory(experiment_config)
     shared_config.epsilon = 0.9 * sqrt((1 - masking_rate) * shared_config.G.N) * sigma;
 
     shared_config.max_iteration = 20000;
-    shared_config.tolerance = 1e-8;
+    shared_config.tolerance = 1e-5;
 
     shared_config.stopping_criteria = @(config, state) stopping_criteria(state, shared_config.max_iteration, shared_config.tolerance);
     shared_config.before_iteration = @(config, state) before_iteration(state);
@@ -46,7 +43,7 @@ end
 function state = after_iteration(config, state, true_signal)
     state.residual(state.i) = compute_pds_residual(config, state);
     state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
-    % if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
+    if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
     if i > 1 & state.residual(state.i) > state.residual(state.i - 1), disp("error!"); end
 end
 

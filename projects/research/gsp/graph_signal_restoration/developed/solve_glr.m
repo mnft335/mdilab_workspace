@@ -16,11 +16,8 @@ function result = solve_glr(shared_config, specific_config)
     algorithm_config.y_init = {zeros(shared_config.G.N, 1), ...
                                zeros(shared_config.G.N, 1)};
     algorithm_config.Gamma_x = {1 / (1 + sqrt(shared_config.G.lmax))};
-    % algorithm_config.Gamma_x = {1 / (1 + shared_config.G.lmax)};
     algorithm_config.Gamma_y = {1, ...
                                 1 / sqrt(shared_config.G.lmax)};
-    % algorithm_config.Gamma_y = {1, ...
-    %                             1 / shared_config.G.lmax};
 
     solver_config.stopping_criteria = shared_config.stopping_criteria;
     solver_config.before_iteration = shared_config.before_iteration;

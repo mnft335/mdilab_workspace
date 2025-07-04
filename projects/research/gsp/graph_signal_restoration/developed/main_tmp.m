@@ -1,14 +1,14 @@
 clear;
 
 corruption_rate = 0.1:0.1:0.9;
-alpha = 0.1:0.1:0.9;
+% alpha = 0.1:0.1:0.9;
 
-for j = 1:numel(alpha)
+% for j = 1:numel(alpha)
 for i = 1:numel(corruption_rate)
 
 rng(0);
 
-experiment_config.kernel_sigma = 0.1;
+experiment_config.kernel_variance = 0.1;
 experiment_config.corruption_rate = corruption_rate(i);
 experiment_config.masking_rate = 0.5;
 experiment_config.sigma = 0.25;
@@ -20,7 +20,7 @@ proposal_config.alpha = alpha(j);
 
 % glr_solved = solve_glr(shared_config, glr_config);
 % gtv_solved = solve_gtv(shared_config, gtv_config);
-proposal_solved = solve_proposal(shared_config, proposal_config);
+% proposal_solved = solve_proposal(shared_config, proposal_config);
 
 % disp(glr_solved.accuracy(end));
 % glr_accuracy(i) = glr_solved.accuracy(end);
@@ -34,7 +34,7 @@ figure;
 % plot(corruption_rate, glr_accuracy);
 plot(corruption_rate, proposal_accuracy);
 
-end
+% end
 
 % figure;
 % subplot(1, 3, 1);

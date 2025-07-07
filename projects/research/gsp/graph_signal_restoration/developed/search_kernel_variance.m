@@ -1,6 +1,6 @@
 clear;
 
-kernel_variance = 0.01:0.01:0.2;
+kernel_variance = 0.01:0.01:0.25;
 % kernel_variance = 0.02;
 
 for i = 1:numel(kernel_variance)

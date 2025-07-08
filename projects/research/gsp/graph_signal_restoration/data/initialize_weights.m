@@ -1,4 +1,5 @@
 function weights = initialize_weights(weights, signal, variance)
+
     % num_edges = numel(find(triu(weights, 1)));
     % adjacency = weights > 0;
     % squared_difference = (signal - signal.').^2;
@@ -8,9 +9,9 @@ function weights = initialize_weights(weights, signal, variance)
 
     [row, column] = find(triu(weights, 1));
     num_edges = numel(row);
-    upper_weights = randn(num_edges);
-    weights(row, column) = upper_weights;
-    weights(column, row) = upper_weights;
-
+    upper_weights = randn(num_edges, 1);
+    weights(sub2ind(size(weights), row, column)) = upper_weights;
+    weights = weights + weights.';
     weights = weights .* num_edges ./ sum(weights, 'all');
+
 end

@@ -9,6 +9,8 @@ function shared_config = shared_config_factory(experiment_config)
     shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
     shared_config.G = gsp_adj2vec(shared_config.G);
+    shared_config.true_signal = gsp_filter(shared_config.G, gsp_design_heat(shared_config.G, 10), randn(shared_config.G.N, 1));
+    shared_config.true_signal = shared_config.true_signal ./ max(shared_config.true_signal);
 
     masking_rate = experiment_config.masking_rate;
     mask = ones(shared_config.G.N, 1);

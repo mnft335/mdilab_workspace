@@ -6,8 +6,5 @@ function weights = initialize_weights(weights, signal, variance)
     weights = exp(- squared_difference / (2 * variance));
     weights = weights .* num_edges / sum(weights, 'all');
     weights = weights .* adjacency;
-    norm(weights - weights.', 'fro')
-    norm(diag(weights))
-    sum(weights < 0, 'all')
 
 end

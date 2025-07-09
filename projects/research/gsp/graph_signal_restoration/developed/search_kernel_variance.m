@@ -1,16 +1,17 @@
 clear;
 
 kernel_variance = 0.01:0.01:0.1;
-masking_rate = 0.0:0.1:0.5;
-% kernel_variance = 0.02;
-for j = 1:numel(masking_rate)
+% random_seed = 0:9;
+random_seed = 0;
 for i = 1:numel(kernel_variance)
-    rng(0);
+for j = 1:numel(random_seed)
+
+    rng(j);
 
     experiment_config.kernel_variance = kernel_variance(i);
     experiment_config.corruption_method = @(W, k, l) additive_corruption(W, k, l, corruption_sigma(j));
     experiment_config.corruption_rate = 0.0;
-    experiment_config.masking_rate = masking_rate(j);
+    experiment_config.masking_rate = 0.3;
     experiment_config.sigma = 0.0;
 
     glr_config = struct();
@@ -26,6 +27,7 @@ for i = 1:numel(kernel_variance)
     accuracy_gtv(i) = gtv_solved.accuracy(end);
     accuracy_proposal(i) = proposal_solved.accuracy(end);
 
+end
 end
 
 [minimum, argmin] = min(accuracy_glr);
@@ -44,4 +46,3 @@ plot(kernel_variance, accuracy_proposal);
 title("Proposal");
 
 linkaxes(ax(:));
-end

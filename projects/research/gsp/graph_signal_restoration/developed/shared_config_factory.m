@@ -5,11 +5,14 @@ function shared_config = shared_config_factory(experiment_config)
     load(path_search("Rome"));
     shared_config.true_signal = generate_signal(W);
     % shared_config.true_signal = double(data(:, 1)) / double(max(data(:, 1)));
-    W = initialize_weights(W, shared_config.true_signal, experiment_config.kernel_variance);
+    W = initialize_weights(double(W), shared_config.true_signal, experiment_config.kernel_variance);
     W = corrupt_weights(W, @(W, i, j) experiment_config.corruption_method(W, i, j), experiment_config.corruption_rate);
     shared_config.G = gsp_graph(W, pos);
     shared_config.G = gsp_compute_fourier_basis(shared_config.G);
     shared_config.G = gsp_adj2vec(shared_config.G);
+    shared_config.true_signal.' * shared_config.G.L * shared_config.true_signal
+    figure;
+    gsp_plot_signal(shared_config.G, shared_config.true_signal);
 
     masking_rate = experiment_config.masking_rate;
     mask = ones(shared_config.G.N, 1);
@@ -24,6 +27,7 @@ function shared_config = shared_config_factory(experiment_config)
     shared_config.lower = 0;
     shared_config.upper = 1;
     shared_config.epsilon = 0.9 * sqrt((1 - masking_rate) * shared_config.G.N) * sigma;
+
 
     shared_config.max_iteration = 20000;
     shared_config.tolerance = 1e-5;

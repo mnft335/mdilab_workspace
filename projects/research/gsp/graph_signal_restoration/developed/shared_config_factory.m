@@ -4,8 +4,8 @@ function shared_config = shared_config_factory(experiment_config)
 
     load(path_search("Rome"));
     W = double(W);
-    shared_config.true_signal = double(data(:, 1)) ./ double(max(data(:, 1)));
-    % shared_config.true_signal = generate_signal(W);
+    W = generate_random_weights(W);
+    shared_config.true_signal = generate_signal(W);
     % W = initialize_weights(W, shared_config.true_signal, experiment_config.kernel_variance);
     W = corrupt_weights(W, @(W, i, j) experiment_config.corruption_method(W, i, j), experiment_config.corruption_rate);
     shared_config.G = gsp_graph(W, pos);

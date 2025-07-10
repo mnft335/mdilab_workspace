@@ -1,6 +1,6 @@
 clear;
 
-kernel_variance = 0.01:0.01:0.1;
+kernel_variance = 0.001:0.001:0.01;
 random_seed = 0:9;
 
 for i = 1:numel(kernel_variance)
@@ -23,26 +23,26 @@ for j = 1:numel(random_seed)
     gtv_solved = solve_gtv(shared_config, gtv_config);
     proposal_solved = solve_proposal(shared_config, proposal_config);
 
-    accuracy_glr(i) = glr_solved.accuracy(end);
-    accuracy_gtv(i) = gtv_solved.accuracy(end);
-    accuracy_proposal(i) = proposal_solved.accuracy(end);
+    accuracy_glr(i, j) = glr_solved.accuracy(end);
+    accuracy_gtv(i, j) = gtv_solved.accuracy(end);
+    accuracy_proposal(i, j) = proposal_solved.accuracy(end);
 
 end
 end
 
-[minimum, argmin] = min(accuracy_glr);
+[minimum, argmin] = min(mean(accuracy_glr, 2));
 disp("The minimum " + num2str(minimum) + " is attained at kernel_variance = " + num2str(kernel_variance(argmin)));
 
 figure;
 tiledlayout(1, 3);
 ax(1) = nexttile;
-plot(kernel_variance, accuracy_glr);
+plot(kernel_variance, mean(accuracy_glr, 2));
 title("GLR");
 ax(2) = nexttile;
-plot(kernel_variance, accuracy_gtv);
+plot(kernel_variance, mean(accuracy_gtv, 2));
 title("GTV");
 ax(3) = nexttile;
-plot(kernel_variance, accuracy_proposal);
+plot(kernel_variance, mean(accuracy_proposal, 2));
 title("Proposal");
 
 linkaxes(ax(:));

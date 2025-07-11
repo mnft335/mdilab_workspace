@@ -26,31 +26,38 @@ function shared_config = shared_config_factory(experiment_config)
     shared_config.upper = 1;
     shared_config.epsilon = 0.9 * sqrt((1 - masking_rate) * shared_config.G.N) * sigma;
 
-
     shared_config.max_iteration = 20000;
     shared_config.tolerance = 1e-5;
 
     shared_config.stopping_criteria = @(config, state) stopping_criteria(state, shared_config.max_iteration, shared_config.tolerance);
     shared_config.before_iteration = @(config, state) before_iteration(state);
     shared_config.after_iteration = @(config, state) after_iteration(config, state, shared_config.true_signal);
+
 end
 
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
+
     is_converge = state.i >= max_iteration | state.residual(state.i) < tolerance;
+
 end
 
 function state = before_iteration(state)
+
     if ~isfield(state, "i"), state.i = 1; else, state.i = state.i + 1; end
+
 end
 
 function state = after_iteration(config, state, true_signal)
+
     state.residual(state.i) = compute_pds_residual(config, state);
     state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
     if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
     if state.i > 1 & state.residual(state.i) > state.residual(state.i - 1), disp("error!"); end
+
 end
 
 function result = compute_pds_residual(config, state)
+
     primal_difference = cellfun(@(z1, z2) z1 - z2, state.x, state.x_prev, "UniformOutput", false);
     dual_difference = cellfun(@(z1, z2) z1 - z2, state.y, state.y_prev, "UniformOutput", false);
 
@@ -58,4 +65,5 @@ function result = compute_pds_residual(config, state)
     dual_term = cellfun(@(z1, z2) sum(z1.^2) / z2, dual_difference, config.Gamma_y);
     mixed_term = cellfun(@(z1, z2) - 2 * dot(z1, z2), primal_difference, config.Lt(dual_difference));
     result = sum([primal_term, dual_term, mixed_term]);
+
 end

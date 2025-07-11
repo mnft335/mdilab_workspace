@@ -13,7 +13,7 @@ for j = 1:numel(corruption_sigma)
     experiment_config.corruption_method = @(W, k, l) additive_corruption(W, k, l, corruption_sigma(j));
     experiment_config.corruption_rate = corruption_rate(h);
     experiment_config.masking_rate = 0.5;
-    experiment_config.sigma = 0.3;
+    experiment_config.sigma = 0.1;
 
     glr_config = struct();
     gtv_config = struct();

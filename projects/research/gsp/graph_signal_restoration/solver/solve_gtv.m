@@ -1,8 +1,10 @@
 function result = solve_gtv(shared_config, specific_config)
 
+    gamma_y2 = 0.5 / (sqrt(max(eig(shared_config.G.Diff.' * diag(shared_config.G.weights) * shared_config.G.Diff))));
+
     import prox.*;
     prox_ball_l2_conj = prox_conj(@(z, gamma) prox_ball_l2(z, shared_config.b, shared_config.epsilon));
-    prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, 1));
+    prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, gamma_y2 * 0.5));
 
     problem_config.L = @(z) {shared_config.Phi(z{1}), ...
                              sqrt(shared_config.G.weights) .* (shared_config.G.Diff * z{1})};

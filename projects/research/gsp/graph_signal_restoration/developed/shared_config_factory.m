@@ -37,7 +37,8 @@ end
 
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
 
-    is_converge = state.i >= max_iteration | state.residual(state.i) < tolerance;
+    % is_converge = state.i >= max_iteration | state.residual(state.i) < tolerance;
+    is_converge = state.residual(state.i) < tolerance;
 
 end
 

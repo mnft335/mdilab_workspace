@@ -1,4 +1,4 @@
-function weights = generate_random_weights(weights)
+function weights = generate_gaussian_weights(weights)
 
     num_edges = numel(find(triu(weights, 1)));
     adjacency = weights > 0;

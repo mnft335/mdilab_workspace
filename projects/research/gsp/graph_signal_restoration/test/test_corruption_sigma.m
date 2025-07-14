@@ -4,6 +4,9 @@ corruption_rate = 0.1:0.1:1.0;
 random_seed = 0:9;
 corruption_sigma = 0.1:0.1:1.0;
 
+figure;
+tiledlayout(2, int8((numel(corruption_rate) + 2) / 2));
+
 for h = 1:numel(corruption_rate)
 for i = 1:numel(random_seed)
 for j = 1:numel(corruption_sigma)
@@ -30,16 +33,12 @@ for j = 1:numel(corruption_sigma)
 end
 end
 
-figure;
-tiledlayout(2, int8((numel(random_seed) + 2) / 2));
-
-for i = 1:numel(random_seed)
-    ax(i) = nexttile;
-    hold on;
-    plot(corruption_sigma, glr_accuracy(i, :), "black");
-    plot(corruption_sigma, gtv_accuracy(i, :), "blue");
-    plot(corruption_sigma, proposal_accuracy(i, :), "red");
-    title("random seed = " + num2str(random_seed(i)));
+ax(h) = nexttile;
+hold on;
+plot(corruption_sigma, mean(glr_accuracy, 1), "black");
+plot(corruption_sigma, mean(gtv_accuracy, 1), "blue");
+plot(corruption_sigma, mean(proposal_accuracy, 1), "red");
+title("corruption rate = " + num2str(corruption_rate(h)));
 end
 
 parameter_description_axis = nexttile;
@@ -72,5 +71,4 @@ text(parameter_description_axis, 0.0, 0.5, parameter_description, ...
 %      "FontSize", 10, ...
 %      "Interpreter", "none");
 
-linkaxes(ax(1:numel(random_seed)));
-end
+linkaxes(ax(1:numel(corruption_rate)));

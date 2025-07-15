@@ -2,34 +2,37 @@ function shared_config = shared_config_factory(experiment_config)
     
     gsp_start();
 
+    % Load a graph weights (adjacency) W
     load(path_search("Rome"));
-    W = double(W);
-    W = generate_random_weights(W);
-    shared_config.true_signal = generate_signal(W);
-    % W = initialize_weights(W, shared_config.true_signal, experiment_config.kernel_variance);
-    W = corrupt_weights(W, @(W, i, j) experiment_config.corruption_method(W, i, j), experiment_config.corruption_rate);
-    shared_config.G = gsp_graph(W, pos);
-    shared_config.G = gsp_compute_fourier_basis(shared_config.G);
-    shared_config.G = gsp_adj2vec(shared_config.G);
 
-    masking_rate = experiment_config.masking_rate;
+    % Generate true weights and a signal
+    W = experiment_config.generate_weights(W);
+    shared_config.true_signal = generate_signal(create_graph(W));
+
+    % Corrupt the graph weights
+    W = corrupt_weights(W, @(W, i, j) experiment_config.corruption_method(W, i, j), experiment_config.corruption_rate);
+    shared_config.G = create_graph(W);
+
+    % Generate an observation matrix Phi and its transpose Phit
     mask = ones(shared_config.G.N, 1);
-    if masking_rate ~= 0, mask(randperm(shared_config.G.N, round(masking_rate * shared_config.G.N))) = 0; end
+    if experiment_config.masking_rate ~= 0, mask(randperm(shared_config.G.N, round(experiment_config.masking_rate * shared_config.G.N))) = 0; end
 
     shared_config.Phi = @(z) mask .* z;
     shared_config.Phit = @(z) mask .* z;
 
-    sigma = experiment_config.sigma;
-    shared_config.b = shared_config.Phi(shared_config.true_signal + sigma * randn(size(shared_config.true_signal)));
+    % Generate an observed signal
+    shared_config.b = shared_config.Phi(shared_config.true_signal + experiment_config.sigma * randn(size(shared_config.true_signal)));
 
+    % Regularization parameters
     shared_config.lower = 0;
     shared_config.upper = 1;
-    shared_config.epsilon = 0.9 * sqrt((1 - masking_rate) * shared_config.G.N) * sigma;
+    shared_config.epsilon = 0.9 * sqrt((1 - experiment_config.masking_rate) * shared_config.G.N) * experiment_config.sigma;
 
-    shared_config.max_iteration = 20000;
-    shared_config.tolerance = 1e-5;
+    % Configurations for solve_pds()
+    max_iteration = 20000;
+    tolerance = 1e-5;
 
-    shared_config.stopping_criteria = @(config, state) stopping_criteria(state, shared_config.max_iteration, shared_config.tolerance);
+    shared_config.stopping_criteria = @(config, state) stopping_criteria(state, max_iteration, tolerance);
     shared_config.before_iteration = @(config, state) before_iteration(state);
     shared_config.after_iteration = @(config, state) after_iteration(config, state, shared_config.true_signal);
 
@@ -37,7 +40,6 @@ end
 
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
 
-    % is_converge = state.i >= max_iteration | state.residual(state.i) < tolerance;
     is_converge = state.residual(state.i) < tolerance;
 
 end
@@ -53,7 +55,7 @@ function state = after_iteration(config, state, true_signal)
     state.residual(state.i) = compute_pds_residual(config, state);
     state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
     if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
-    if state.i > 1 & state.residual(state.i) > state.residual(state.i - 1), disp("error!"); end
+    assert(state.residual(state.i) <= state.residual(state.i - 1), "Fixed point residual is not monotonically nonincreasing");
 
 end
 

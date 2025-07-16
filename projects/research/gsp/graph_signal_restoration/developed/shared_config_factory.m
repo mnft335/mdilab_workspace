@@ -5,12 +5,12 @@ function shared_config = shared_config_factory(experiment_config)
     % Load a graph weights (adjacency) W
     load(path_search("Rome"));
 
-    % Generate true weights and a signal
+    % Generate a signal from correct weights
     W = experiment_config.generate_weights(W);
     shared_config.true_signal = generate_signal(create_graph(W));
 
-    % Corrupt the graph weights
-    W = corrupt_weights(W, @(W, i, j) experiment_config.corruption_method(W, i, j), experiment_config.corruption_rate);
+    % Generate a graph from corrupted weights
+    W = experiment_config.corrupt_weights(W);
     shared_config.G = create_graph(W);
 
     % Generate an observation matrix Phi and its transpose Phit

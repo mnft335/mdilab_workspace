@@ -24,4 +24,5 @@ function result = solve_glr(shared_config, specific_config)
     solver_config.after_iteration = shared_config.after_iteration;
 
     result = solve_pds(problem_config, algorithm_config, solver_config);
+    
 end

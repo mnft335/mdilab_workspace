@@ -35,15 +35,20 @@ function state = solve_pds(problem_config, algorithm_config, solver_config)
         
         if config.stopping_criteria(config, state), break; end
     end
+
 end
 
 function x_updated = update_x(config, state)
+
     argument = cellfun(@(z1, z2, z3, z4) z1 - z2 * (z3 + z4), state.x, config.Gamma_x, config.grad_f(state.x), config.Lt(state.y), "UniformOutput", false);
     x_updated = config.prox_g(argument, config.Gamma_x);
+
 end
 
 function y_updated = update_y(config, state)
+
     argument = cellfun(@(z1, z2) 2 * z1 - z2, state.x, state.x_prev, "UniformOutput", false);
     argument = cellfun(@(z1, z2, z3) z1 + z2 * z3, state.y, config.Gamma_y, config.L(argument), "UniformOutput", false);
     y_updated = config.prox_h_conj(argument, config.Gamma_y);
+    
 end

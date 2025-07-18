@@ -7,10 +7,10 @@ function shared_config = shared_config_factory(experiment_config)
 
     % Generate a signal from correct weights
     W = experiment_config.generate_weights(W);
-    shared_config.true_signal = generate_signal(create_graph(W));
+    shared_config.true_signal = generate_signal(create_graph(W), 15);
 
     % Generate a graph from corrupted weights
-    W = experiment_config.corrupt_weights(W);
+    W = corrupt_weights(W, experiment_config.weight_corruption_ratio, experiment_config.weight_corruption);
     shared_config.G = create_graph(W);
 
     % Generate an observation matrix Phi and its transpose Phit
@@ -29,18 +29,19 @@ function shared_config = shared_config_factory(experiment_config)
     shared_config.epsilon = 0.9 * sqrt((1 - experiment_config.masking_rate) * shared_config.G.N) * experiment_config.sigma;
 
     % Configurations for solve_pds()
-    max_iteration = 20000;
+    max_iteration = 10000;
     tolerance = 1e-5;
 
     shared_config.stopping_criteria = @(config, state) stopping_criteria(state, max_iteration, tolerance);
     shared_config.before_iteration = @(config, state) before_iteration(state);
-    shared_config.after_iteration = @(config, state) after_iteration(config, state, shared_config.true_signal);
+    shared_config.after_iteration = @(config, state) after_iteration(config, state);
 
 end
 
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
 
-    is_converge = state.residual(state.i) < tolerance;
+    is_converge = state.i >= max_iteration | state.residual < tolerance;
+    if is_converge, disp("Done!"); end
 
 end
 
@@ -50,12 +51,17 @@ function state = before_iteration(state)
 
 end
 
-function state = after_iteration(config, state, true_signal)
+function state = after_iteration(config, state)
 
-    state.residual(state.i) = compute_pds_residual(config, state);
-    state.accuracy(state.i) = compute_relative_error(state.x{1}, true_signal);
-    if mod(state.i, 100) == 0, disp("iteration " + num2str(state.i)); end
-    assert(state.residual(state.i) <= state.residual(state.i - 1), "Fixed point residual is not monotonically nonincreasing");
+    % Compute the fixed-point residual
+    if ~isfield(state, "residual"), state.residual = Inf; end
+
+    previous_residual = state.residual;
+    state.residual = compute_pds_residual(config, state);
+
+    % Terminate if the fixed-point residual is not monotonically nonincreasing
+    if mod(state.i, 1000) == 0, disp("Over " + num2str(state.i) + " iterations"); end
+    assert(state.residual < previous_residual, "Fixed point residual is not monotonically nonincreasing");
 
 end
 

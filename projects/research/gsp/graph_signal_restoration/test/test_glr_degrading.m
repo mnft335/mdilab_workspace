@@ -1,5 +1,7 @@
 clear;
 
+list_generate_uniform_weights = create_handle_list(@)
+
 % Configurations to iterate over
 config.generate_weights = {@(z) generate_uniform_weights(z), ...
                     @(z) generate_truncated_normal_weights(z, 1)};
@@ -9,7 +11,6 @@ config.weight_corruption = {@add_truncated_normal_noise, ...
 
 additive_weight_noise_sigma = 1:10;
 additive_weight_noise_ratio = 0.1:0.1:1.0;
-
 
 config.multiplicative_weight_noise_sigma = 1:10;
 config.multiplicative_weight_noise_ratio = 0.1:0.1:1.0;

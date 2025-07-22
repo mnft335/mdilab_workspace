@@ -3,7 +3,7 @@
         % Create a normal diistribution object truncated at 0
         truncated_normal_distribution = truncate(makedist("Normal", "mu", 0, "sigma", sigma));
 
-        % Sample noises on the forward edges from a normal distribution truncated at 0
+        % Sample noises on the forward edges (idx_corrupted_weights) from a normal distribution truncated at 0
         noise = zeros(size(weights));
         noise(idx_corrupted_weights) = random(truncated_normal_distribution, numel(idx_corrupted_weights), 1);
 

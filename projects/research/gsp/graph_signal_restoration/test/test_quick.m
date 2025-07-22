@@ -1,8 +1,9 @@
 clear;
 
-experiment_config.generate_weights = @generate_uniform_weights;
+experiment_config.generate_weights = @(W) generate_truncated_normal_weights(W, 1);
+experiment_config.num_sampling = 500;
 experiment_config.masking_rate = 0.5;
-experiment_config.sigma = 0.1;
+experiment_config.signal_noise_sigma = 0.1;
 
 weight_corruption_ratio = 0.0:0.1:1.0;
 weight_corruption_sigma = 0.1:0.1:1.0;
@@ -22,7 +23,6 @@ for k = 1:numel(weight_corruption_ratio)
             glr_result = solve_glr(shared_config, glr_config);
             glr_accuracy(k, i, j) = compute_relative_error(glr_result.x{1}, shared_config.true_signal);
    
-            
         end
     end
 end

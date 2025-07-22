@@ -1,13 +1,11 @@
 function shared_config = shared_config_factory(experiment_config)
     
-    gsp_start();
-
     % Load a graph weights (adjacency) W
     load(path_search("Rome"));
 
     % Generate a signal from correct weights
     W = experiment_config.generate_weights(W);
-    shared_config.true_signal = generate_signal(create_graph(W), 15);
+    shared_config.true_signal = generate_signal(create_graph(W), experiment_config.num_sampling);
 
     % Generate a graph from corrupted weights
     W = corrupt_weights(W, experiment_config.weight_corruption_ratio, experiment_config.weight_corruption);
@@ -21,12 +19,12 @@ function shared_config = shared_config_factory(experiment_config)
     shared_config.Phit = @(z) mask .* z;
 
     % Generate an observed signal
-    shared_config.b = shared_config.Phi(shared_config.true_signal + experiment_config.sigma * randn(size(shared_config.true_signal)));
+    shared_config.b = shared_config.Phi(shared_config.true_signal + experiment_config.signal_noise_sigma * randn(size(shared_config.true_signal)));
 
     % Regularization parameters
     shared_config.lower = 0;
     shared_config.upper = 1;
-    shared_config.epsilon = 0.9 * sqrt((1 - experiment_config.masking_rate) * shared_config.G.N) * experiment_config.sigma;
+    shared_config.epsilon = 0.9 * sqrt((1 - experiment_config.masking_rate) * shared_config.G.N) * experiment_config.signal_noise_sigma;
 
     % Configurations for solve_pds()
     max_iteration = 10000;

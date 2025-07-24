@@ -1,0 +1,4 @@
+classdef RandomFunction < handle
+
+    properties
+

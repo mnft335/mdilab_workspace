@@ -5,17 +5,12 @@ function shared_config = shared_config_factory(concrete_config)
     shared_config.true_signal = concrete_config.generate_signal(create_graph(W_clean));
 
     % Generate a graph from corrupted weights
-    W = concrete_config.corrupt_weights(W_clean);
-    shared_config.G = create_graph(W);
+    W_noisy = concrete_config.corrupt_weights(W_clean);
+    shared_config.G = create_graph(W_noisy);
 
     % Generate an observation matrix Phi and its transpose Phit
-    mask = ones(shared_config.G.N, 1);
-
-    if concrete_config.masking_rate ~= 0
-        random_indices = randperm(shared_config.G.N);
-        masked_indices = random_indices(1:int64(shared_config.G.N * concrete_config.masking_rate));
-        mask(masked_indices) = 0;
-    end
+    mask = concrete_config.generate_signal_mask(shared_config.G.N
+    , masking_rate)
 
     shared_config.Phi = @(z) mask .* z;
     shared_config.Phit = @(z) mask .* z;

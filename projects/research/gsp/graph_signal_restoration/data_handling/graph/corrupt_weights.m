@@ -1,18 +1,20 @@
-function weights = corrupt_weights(weights, corruption_ratio, corruption)
+function weights_corrupted = corrupt_weights(weights, corruption_ratio, corruption)
 
     % Find the indices of the forward edges (edges in the triangular part)
     idx_forward_weights = find(triu(weights, 1));
 
     % Determine the indices of corrupted weights
-    random_indices = randperm(numel(idx_forward_weights), int8(numel(idx_forward_weights) * corruption_ratio));
-    idx_corrupted_weights = idx_forward_weights(random_indices);
+    num_corrupted_weights = int64(numel(idx_forward_weights) * corruption_ratio);
+    random_indices = randperm(numel(idx_forward_weights));
+    idx_corrupted_weights = idx_forward_weights(random_indices(1:num_corrupted_weights));
 
     % Corrupt weights
-    weights = corruption(weights, idx_corrupted_weights);
+    weights_corrupted = corruption(weights, idx_corrupted_weights);
 
     % Normalize the weights to mean 1
-    weights = weights / mean(weights(weights ~= 0), 'all');
+    weights_corrupted = weights_corrupted / mean(weights(weights_corrupted ~= 0), 'all');
 
+    % Check if the weights are theoretically valid
     check_weights(weights);
 
 end

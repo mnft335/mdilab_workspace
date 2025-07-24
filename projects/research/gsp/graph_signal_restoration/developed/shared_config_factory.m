@@ -1,19 +1,21 @@
 function shared_config = shared_config_factory(experiment_config)
     
-    % Load a graph weights (adjacency) W
-    load(path_search("Rome"));
-
     % Generate a signal from correct weights
-    W = experiment_config.generate_weights(W);
-    shared_config.true_signal = generate_signal(create_graph(W), experiment_config.num_sampling);
+    W_clean = experiment_config.generate_weights(experiment_config.adjacency);
+    shared_config.true_signal = generate_signal(create_graph(W_clean), experiment_config.num_sampling);
 
     % Generate a graph from corrupted weights
-    W = corrupt_weights(W, experiment_config.weight_corruption_ratio, experiment_config.weight_corruption);
+    W = corrupt_weights(W_clean, experiment_config.weight_corruption_ratio, experiment_config.weight_corruption);
     shared_config.G = create_graph(W);
 
     % Generate an observation matrix Phi and its transpose Phit
     mask = ones(shared_config.G.N, 1);
-    if experiment_config.masking_rate ~= 0, mask(randperm(shared_config.G.N, round(experiment_config.masking_rate * shared_config.G.N))) = 0; end
+
+    if experiment_config.masking_rate ~= 0
+        random_indices = randperm(shared_config.G.N);
+        masked_indices = random_indices(1:int64(shared_config.G.N * experiment_config.masking_rate));
+        mask(masked_indices) = 0;
+    end
 
     shared_config.Phi = @(z) mask .* z;
     shared_config.Phit = @(z) mask .* z;
@@ -39,7 +41,7 @@ end
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
 
     is_converge = state.i >= max_iteration | state.residual < tolerance;
-    if is_converge, disp("Done!"); end
+    % if is_converge, disp("Done!"); end
 
 end
 

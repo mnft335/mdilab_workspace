@@ -12,7 +12,7 @@ num_sampling = 60:60:300;
 weight_corruption_ratio = 0.0:0.2:1.0;
 weight_corruption_sigma = 0.5:0.5:2.0;
 masking_rate = 0.2:0.2:0.8;
-signal_noise_sigma = 
+signal_noise_sigma = 1.0;
 
 random_seed = 0:9;
 

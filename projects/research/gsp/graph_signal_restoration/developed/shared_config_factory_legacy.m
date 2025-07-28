@@ -1,26 +1,32 @@
-function shared_config = shared_config_factory(concrete_config)
+function shared_config = shared_config_factory(experiment_config)
     
     % Generate a signal from correct weights
-    W_clean = concrete_config.generate_weights(concrete_config.adjacency);
-    shared_config.true_signal = concrete_config.generate_clean_signal(create_graph(W_clean));
+    W_clean = experiment_config.generate_weights(experiment_config.adjacency);
+    shared_config.true_signal = generate_clean_signal(create_graph(W_clean), experiment_config.num_sampling);
 
     % Generate a graph from corrupted weights
-    W_noisy = concrete_config.corrupt_weights(W_clean);
-    shared_config.G = create_graph(W_noisy);
+    W = corrupt_weights(W_clean, experiment_config.weight_corruption_ratio, experiment_config.weight_corruption);
+    shared_config.G = create_graph(W);
 
     % Generate an observation matrix Phi and its transpose Phit
-    mask = concrete_config.generate_signal_mask(shared_config.G.N, concrete_config.masking_rate);
+    mask = ones(shared_config.G.N, 1);
+
+    if experiment_config.masking_rate ~= 0
+        random_indices = randperm(shared_config.G.N);
+        masked_indices = random_indices(1:int64(shared_config.G.N * experiment_config.masking_rate));
+        mask(masked_indices) = 0;
+    end
 
     shared_config.Phi = @(z) mask .* z;
     shared_config.Phit = @(z) mask .* z;
 
     % Generate an observed signal
-    shared_config.b = concrete_config.corrupt_signal(shared_config.true_signal, shared_config.Phi, concrete_config.signal_noise_sigma);
+    shared_config.b = shared_config.Phi(shared_config.true_signal + experiment_config.signal_noise_sigma * randn(size(shared_config.true_signal)));
 
     % Regularization parameters
     shared_config.lower = 0;
     shared_config.upper = 1;
-    shared_config.epsilon = 0.9 * sqrt(int64((1 - concrete_config.masking_rate) * shared_config.G.N)) * concrete_config.signal_noise_sigma;
+    shared_config.epsilon = 0.9 * sqrt((1 - experiment_config.masking_rate) * shared_config.G.N) * experiment_config.signal_noise_sigma;
 
     % Configurations for solve_pds()
     max_iteration = 10000;
@@ -35,13 +41,13 @@ end
 function is_converge = stopping_criteria(state, max_iteration, tolerance)
 
     is_converge = state.i >= max_iteration | state.residual < tolerance;
+    % if is_converge, disp("Done!"); end
 
 end
 
 function state = before_iteration(state)
 
-    if ~isfield(state, "i"), state.i = 0; end
-    state.i = state.i + 1;
+    if ~isfield(state, "i"), state.i = 1; else, state.i = state.i + 1; end
 
 end
 
@@ -54,6 +60,7 @@ function state = after_iteration(config, state)
     state.residual = compute_pds_residual(config, state);
 
     % Terminate if the fixed-point residual is not monotonically nonincreasing
+    if mod(state.i, 1000) == 0, disp("Over " + num2str(state.i) + " iterations"); end
     assert(state.residual < previous_residual, "Fixed point residual is not monotonically nonincreasing");
 
 end

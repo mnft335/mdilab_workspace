@@ -1,19 +1,19 @@
-function state = solve_pds(problem_config, algorithm_config, solver_config)
+function state = solve_pds(formulation_config, pds_config, solver_config)
 
-    % Problem configurations
-    config.L = problem_config.L;
-    config.Lt = problem_config.Lt;
-    config.grad_f = problem_config.grad_f;
-    config.prox_g = problem_config.prox_g;
-    config.prox_h_conj = problem_config.prox_h_conj;
+    % Formulation configurations
+    config.L = formulation_config.L;
+    config.Lt = formulation_config.Lt;
+    config.grad_f = formulation_config.grad_f;
+    config.prox_g = formulation_config.prox_g;
+    config.prox_h_conj = formulation_config.prox_h_conj;
 
-    % Algorithm configurations
-    config.x_init = algorithm_config.x_init;
-    config.y_init = algorithm_config.y_init;
-    config.Gamma_x = algorithm_config.Gamma_x;
-    config.Gamma_y = algorithm_config.Gamma_y;
+    % PDS configurations
+    config.gamma_x = pds_config.gamma_x;
+    config.gamma_y = pds_config.gamma_y;
 
-    % Program configurations
+    % Solver configurations
+    config.x_init = solver_config.x_init;
+    config.y_init = solver_config.y_init;
     config.stopping_criteria = solver_config.stopping_criteria;
     config.before_iteration = solver_config.before_iteration;
     config.after_iteration = solver_config.after_iteration;
@@ -40,15 +40,15 @@ end
 
 function x_updated = update_x(config, state)
 
-    argument = cellfun(@(z1, z2, z3, z4) z1 - z2 * (z3 + z4), state.x, config.Gamma_x, config.grad_f(state.x), config.Lt(state.y), "UniformOutput", false);
-    x_updated = config.prox_g(argument, config.Gamma_x);
+    argument = cellfun(@(z1, z2, z3, z4) z1 - z2 * (z3 + z4), state.x, config.gamma_x, config.grad_f(state.x), config.Lt(state.y), "UniformOutput", false);
+    x_updated = config.prox_g(argument, config.gamma_x);
 
 end
 
 function y_updated = update_y(config, state)
 
     argument = cellfun(@(z1, z2) 2 * z1 - z2, state.x, state.x_prev, "UniformOutput", false);
-    argument = cellfun(@(z1, z2, z3) z1 + z2 * z3, state.y, config.Gamma_y, config.L(argument), "UniformOutput", false);
-    y_updated = config.prox_h_conj(argument, config.Gamma_y);
+    argument = cellfun(@(z1, z2, z3) z1 + z2 * z3, state.y, config.gamma_y, config.L(argument), "UniformOutput", false);
+    y_updated = config.prox_h_conj(argument, config.gamma_y);
     
 end

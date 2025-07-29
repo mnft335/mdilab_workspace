@@ -1,5 +1,41 @@
 clear;
 
+gsp_start();
+
+% Configure functions with random streams initialized by the master seed
+random_functions = 
+
+% Graph setup
+% Load a graph adjacency W
+load(path_search("Rome"));
+
+% Generate a signal from correct weights
+W_clean = graph.generate_weighted_adjacency(W, )
+
+formulation_specifics.observed_signal
+
+formulation_specifics.linear_observation = @()
+formulation_specifics.linear_observation_transpose = 
+formulation_specifics.root_laplacian = @(z) 
+formulation_specifics.root_laplacian_transpose = 
+
+formulation_specifics.signal_lower_bound = 0;
+formulation_specifics.signal_upper_bound = 1;
+formulation_specifics.l2_ball_radius = 0.9 * sqrt()
+formulation_specifics.coefficient_l2
+
+algorithm_specifics.step_size_primal_variable = 
+algorithm_specifics.step_size_dual_variable_l2_ball = 
+algorithm_specifics.step_size_dual_variable_l2 = 
+
+solver_specifics.initial_primal_variable = zeros()
+solver_specifics.initial_dual_variable_l2_ball = zeros()
+solver_specifics.initial_dual_variable_l2 = zeros()
+solver_specifics.stopping_criteria
+solver_specifics.before_iteration
+solver_specifics.after_iteration
+
+
 list_generate_uniform_weights = create_handle_list(@)
 
 % Configurations to iterate over

@@ -10,7 +10,7 @@ function corrupted_weight_matrix = generate_corrupted_weight_matrix(stream, weig
     forward_weights(idx_corrupted_weights) = corrupt_forward_weights(forward_weights(idx_corrupted_weights));
 
     % Create a corrrupted_weight_matrix
-    adjacency = weights ~=0;
+    adjacency = weights ~= 0;
     corrupted_weight_matrix = create_weight_matrix(forward_weights, adjacency);
 
 end

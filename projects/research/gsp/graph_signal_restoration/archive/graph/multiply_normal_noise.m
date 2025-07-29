@@ -4,7 +4,7 @@ function weights = multiply_normal_noise(stream, weights, idx_corrupted_weights,
     noise = zeros(size(weights));
     noise(idx_corrupted_weights) = sigma + randn(stream, numel(idx_corrupted_weights), 1);
 
-    % Shift the noise to make them positive (larger than eps)
+    % Shift the noise to make them positive (strictly larger than eps)
     noise(idx_corrupted_weights) = noise(idx_corrupted_weights) + max(0, max(- noise(idx_corrupted_weights))) + eps;
 
     % Set noises on the backward edges symmetrically

@@ -1,24 +1,26 @@
 function plot_graph(G, true_signal, observed_signal, restored_signal)
-    figure;
 
-    subplot(1, 3, 1);
+    % Create a figure with minimal spacing and padding
+    figure;
+    tiledlayout(1, 3, "TileSpacing", "tight", "Padding", "tight");
+
+    % Plot the original, observed, and restored signals
+    nexttile;
     gsp_plot_signal(G, true_signal);
     clim([0, 1]);
     colorbar("off");
-    colorbar("North");
     title("Original");
 
-    subplot(1, 3, 2);
+    nexttile;
     gsp_plot_signal(G, observed_signal);
     clim([0, 1]);
     colorbar("off");
-    colorbar("North");
     title("Observed");
 
-    subplot(1, 3, 3);
+    nexttile;
     gsp_plot_signal(G, restored_signal);
     clim([0, 1]);
     colorbar("off");
-    colorbar("North");
     title("Restored");
+
 end

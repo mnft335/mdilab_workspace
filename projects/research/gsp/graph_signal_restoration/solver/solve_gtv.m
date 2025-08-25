@@ -1,30 +1,27 @@
-function result = solve_gtv(shared_config, specific_config)
+function result = solve_gtv(formulation_specifics, pds_specifics, loop_specifics)
 
-    gamma_y2 = 0.5 / (sqrt(max(eig(shared_config.G.Diff.' * diag(shared_config.G.weights) * shared_config.G.Diff))));
+    prox_l2_ball_conj = prox.conjugate(@(z, gamma) prox.l2_ball(z, gamma, formulation_secifics.observed_signal, formulation_specifics.radius_l2_ball));
+    prox_l1_conj = prox.conjugate(@(z, gamma) prox.l1(z, gamma, formulation_specifics.coefficient_l1));
 
-    import prox.*;
-    prox_ball_l2_conj = prox_conj(@(z, gamma) prox_ball_l2(z, shared_config.b, shared_config.epsilon));
-    prox_l1_conj = prox_conj(@(z, gamma) prox_l1(z, gamma, gamma_y2 * 0.5));
-
-    problem_config.L = @(z) {shared_config.Phi(z{1}), ...
-                             sqrt(shared_config.G.weights) .* (shared_config.G.Diff * z{1})};
-    problem_config.Lt = @(z) {shared_config.Phit(z{1}) + shared_config.G.Diff.' * (sqrt(shared_config.G.weights) .* z{2})};
-    problem_config.grad_f = @(z) {zeros(size(z{1}))};
-    problem_config.prox_g = @(z, gamma) {prox_box(z{1}, shared_config.lower, shared_config.upper)};
-    problem_config.prox_h_conj = @(z, gamma) {prox_ball_l2_conj(z{1}, gamma{1}), ...
-                                              prox_l1_conj(z{2}, gamma{2})};
+    formulation_config.L = @(z) {formulation_specifics.apply_observation_operator(z{1}), ...
+                             formulation_specifics.apply_first_order_differential_operator(z{1})};
+    formulation_config.Lt = @(z) {formulation_specifics.apply_observation_operator_adjoint(z{1}) + apply_first_order_differential_operator_adjoint(z{2})};
+    formulation_config.grad_f = @(z) {zeros(size(z{1}))};
+    formulation_config.prox_g = @(z, gamma) {prox.box(z{1}, gamma{1}, formulation_specifics.signal_lower_bound, formulation_specifics.signal_upper_bound)};
+    formulation_config.prox_h_conj = @(z, gamma) {prox_l2_ball_conj(z{1}, gamma{1}), ...
+                                                  prox_l1_conj(z{2}, gamma{2})};
                                   
-    algorithm_config.x_init = {zeros(shared_config.G.N, 1)};
-    algorithm_config.y_init = {zeros(shared_config.G.N, 1), ...
-                               zeros(shared_config.G.Ne, 1)};
-    algorithm_config.Gamma_x = {1 / (1 + sqrt(max(eig(shared_config.G.Diff.' * diag(shared_config.G.weights) * shared_config.G.Diff))))};
+    pds_config.gamma_x = {pds_specifics.step_size_primal_variable};
+    pds_config.gamma_y = {pds_specifics.step_size_dual_variable_l2_ball, ...
+                          pds_specifics.step_size_dual_variable_l2};
+    pds_config.x_init = {pds_specifics.initial_primal_variable};
+    pds_config.y_init = {pds_specifics.initial_dual_variable_l2_ball, ...
+                         pds_specifics.initial_dual_variable_l2};
 
-    algorithm_config.Gamma_y = {1, ...
-                                1 / (sqrt(max(eig(shared_config.G.Diff.' * diag(shared_config.G.weights) * shared_config.G.Diff))))};
+    loop_config.stopping_criteria = loop_specifics.stopping_criteria;
+    loop_config.before_iteration = loop_specifics.before_iteration;
+    loop_config.after_iteration = loop_specifics.after_iteration;
 
-    solver_config.stopping_criteria = shared_config.stopping_criteria;
-    solver_config.before_iteration = shared_config.before_iteration;
-    solver_config.after_iteration = shared_config.after_iteration;
-
-    result = solve_pds(problem_config, algorithm_config, solver_config);
+    result = solve_pds(formulation_config, pds_config, loop_config);
+    
 end

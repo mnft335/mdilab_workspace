@@ -18,7 +18,7 @@ function config_true_signal = factory_config_true_signal(param, arg)
 
         otherwise
 
-            error("Invalid type for ""generate_true_signal"": %s", param.type);
+            error("Invalid type for ""true_signal"": %s", param.type);
 
     end
 

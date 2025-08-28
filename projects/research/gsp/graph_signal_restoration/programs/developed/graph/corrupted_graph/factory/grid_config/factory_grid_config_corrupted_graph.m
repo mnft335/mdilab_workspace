@@ -19,7 +19,7 @@ function grid_config_corrupted_graph = factory_grid_config_corrupted_graph(param
 
         otherwise
 
-            error("Invalid type for ""true_graph"": %s", param.type);
+            error("Invalid type for ""corrupted_graph"": %s", param.type);
 
     end
 

@@ -17,7 +17,7 @@ function config_corrupted_graph = factory_config_corrupted_graph(param, arg)
 
         otherwise
 
-                error("Invalid type for ""corrupted_forward_weights"": %s", param.type);
+                error("Invalid type for ""corrupted_graph"": %s", param.type);
 
     end
 

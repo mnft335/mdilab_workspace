@@ -20,7 +20,7 @@ function config_smooth_sampling_coefficients = factory_config_smooth_sampling_co
 
         otherwise
 
-            error("Invalid type for ""config_smooth_sampling_coefficients"": %s", param.type);
+            error("Invalid type for ""smooth_sampling_coefficients"": %s", param.type);
 
     end
 

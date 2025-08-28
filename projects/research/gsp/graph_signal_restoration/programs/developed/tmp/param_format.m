@@ -30,4 +30,10 @@ param.optimization.type = "glr";
 path.path_result_registry = "projects/research/gsp/graph_signal_restoration/data/result_registry";
 path.path_true_graph_registry = "projects/research/gsp/graph_signal_restoration/data/true_graph_registry";
 
-result = single_runner(param, path);
+grid_config_true_graph = factory_grid_config_true_graph(param.true_graph, []);
+grid_config_corrupted_graph = factory_grid_config_corrupted_graph(param.corrupted_graph, []);
+grid_config_true_signal = factory_grid_config_true_signal(param.true_signal, []);
+grid_config_observation_model = factory_grid_config_observation_model(param.observation_model, []);
+grid_config_optimization = factory_grid_config_optimization(param.optimization, []);
+
+% result = single_runner(param, path);

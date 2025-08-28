@@ -10,11 +10,11 @@ function config_optimization = factory_config_optimization(param, arg)
                                                                                                         "solver", @solver_glr);
 
             % Create the configuration name
-            config_optimization.configuration_name = {"solver=" + param.type};
+            config_optimization.configuration_name = {"optimization=" + param.type};
 
         otherwise
 
-            error("Invalid type for ""solver"": %s", param.type);
+            error("Invalid type for ""optimization"": %s", param.type);
 
     end
 

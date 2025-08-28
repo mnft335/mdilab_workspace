@@ -4,10 +4,10 @@ function grid_config_forward_weight_corruption = factory_grid_config_forward_wei
 
         case "additive"
 
-            % Get the configuration for indices of forward weights to corrupt
+            % Get the grid configuration for indices of forward weights to corrupt
             grid_config_idx_forward_weights_to_corrupt = factory_grid_config_idx_forward_weights_to_corrupt(param.idx_to_corrupt, arg);
 
-            % Get the configuration for forward weight noise
+            % Get the grid configuration for forward weight noise
             grid_config_forward_weight_noise = factory_grid_config_forward_weight_noise(param.noise, arg);
 
             % Create a cell of parameter names

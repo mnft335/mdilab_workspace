@@ -12,12 +12,15 @@ function grid_config_optimization = factory_grid_config_optimization(param, arg)
             grid_config_optimization.parameter_range = {};
 
             % Create the grid configuration name
-            grid_config_optimization.configuration_name = {"optimization=" + string(param.type)};
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
 
         otherwise
 
             error("Invalid type for ""optimization"": %s", param.type);
 
     end
+
+    % Create a "param" struct template
+    grid_config_optimization.param_template = create_param_template(param, grid_config_optimization.parameter_name);
 
 end

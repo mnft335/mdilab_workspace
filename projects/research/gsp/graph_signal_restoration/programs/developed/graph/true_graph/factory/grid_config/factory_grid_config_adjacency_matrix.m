@@ -11,7 +11,7 @@ function grid_config_adjacency_matrix = factory_grid_config_adjacency_matrix(par
             grid_config_adjacency_matrix.parameter_range = {param.city_name};
 
             % Create the grid configuration name
-            grid_config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + string(param.type)};
+            grid_config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type};
 
         otherwise
 

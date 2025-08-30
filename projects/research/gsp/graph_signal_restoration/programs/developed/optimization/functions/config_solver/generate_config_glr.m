@@ -6,7 +6,7 @@ function config_glr = generate_config_glr(graph, true_signal, observation_model)
     config_glr.gradient_operator = @(z) graph.Diff * z;
     config_glr.gradient_operator_adjoint = @(z) graph.Diff' * z;
 
-    % Generate an observed signal
+    % Create an observed signal
     config_glr.observed_signal = config_glr.observation_operator(true_signal) + observation_model.signal_noise;
 
     % Formulation parameters

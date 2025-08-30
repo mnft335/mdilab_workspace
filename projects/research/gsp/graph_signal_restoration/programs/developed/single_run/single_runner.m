@@ -1,21 +1,21 @@
-function single_runner(param, path)
+function single_runner(param, arg)
 
-    % Get all configurations
-    all_config = generate_all_config(param);
+    % Create all configurations
+    config_collection = generate_config_collection(param, arg);
 
     % Create a file path to store the results
-    path_result= fullfile(path.path_result_registry, create_path(all_config.configuration_name), "result.mat");
+    path_result = create_path_result(config_collection);
 
-    % Return the result if it exists
+    % Do nothing if the result already exists
     if exist(path_result, "file"), return; end
 
-    % Get all data
-    all_data = generate_all_data(all_config, path.path_true_graph_registry);
+    % Create all objects
+    object_collection = generate_object_collection(config_collection);
 
     % Solve the optimization problem
-    result = all_data.optimization.solver(all_data.optimization.config_solver);
+    result = object_collection.optimization.solver(object_collection.optimization.config_solver);
 
     % Save the result
-    save_file(path_result, result);
+    save_file(result, path_result);
 
 end

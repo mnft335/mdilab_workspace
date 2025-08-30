@@ -4,10 +4,10 @@ function grid_config_forward_weight_corruption = factory_grid_config_forward_wei
 
         case "additive"
 
-            % Get the grid configuration for indices of forward weights to corrupt
+            % Create a grid configuration for indices of forward weights to corrupt
             grid_config_idx_forward_weights_to_corrupt = factory_grid_config_idx_forward_weights_to_corrupt(param.idx_to_corrupt, arg);
 
-            % Get the grid configuration for forward weight noise
+            % Create a grid configuration for forward weight noise
             grid_config_forward_weight_noise = factory_grid_config_forward_weight_noise(param.noise, arg);
 
             % Create a cell of parameter names
@@ -19,7 +19,7 @@ function grid_config_forward_weight_corruption = factory_grid_config_forward_wei
             grid_config_forward_weight_corruption.parameter_range = [grid_config_idx_forward_weights_to_corrupt.parameter_range, grid_config_forward_weight_noise.parameter_range];
 
             % Create the grid configuration name
-            grid_config_forward_weight_corruption.configuration_name = [{"forward_weight_corruption=" + string(param.type)}, ...
+            grid_config_forward_weight_corruption.configuration_name = [{"forward_weight_corruption=" + param.type}, ...
                                                                         grid_config_idx_forward_weights_to_corrupt.configuration_name, ...
                                                                         grid_config_forward_weight_noise.configuration_name];
 

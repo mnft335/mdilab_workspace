@@ -19,7 +19,7 @@ function grid_config_true_graph = factory_grid_config_true_graph(param, arg)
             grid_config_true_graph.parameter_range = [grid_config_adjacency_matrix.parameter_range, grid_config_true_forward_weights.parameter_range];
 
             % Create the grid configuration name
-            grid_config_true_graph.configuration_name = [{"true_graph=" + string(param.type)}, ...
+            grid_config_true_graph.configuration_name = [{"true_graph=" + param.type}, ...
                                                          grid_config_adjacency_matrix.configuration_name, ...
                                                          grid_config_true_forward_weights.configuration_name];
 
@@ -28,5 +28,8 @@ function grid_config_true_graph = factory_grid_config_true_graph(param, arg)
             error("Invalid type for ""true_graph"": %s", param.type);
 
     end
+
+    % Create a "param" struct template
+    grid_config_true_graph.param_template = create_param_template(param, grid_config_true_graph.parameter_name);
 
 end

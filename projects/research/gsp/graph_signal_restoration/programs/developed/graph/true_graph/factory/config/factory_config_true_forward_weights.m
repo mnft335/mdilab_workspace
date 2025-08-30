@@ -6,7 +6,7 @@ function config_true_forward_weights = factory_config_true_forward_weights(param
         case "gaussian"
 
             % Create a function handle that generates true forward weights
-            random_stream = get_random_stream(param.random_seed, "generate_true_forward_weights:gaussian");
+            random_stream = create_random_stream(param.random_seed, "generate_true_forward_weights:gaussian");
             config_true_forward_weights.generate_true_forward_weights = @(initial_forward_weights) sample_gaussian(random_stream, [numel(initial_forward_weights), 1]);
 
             % Create the configuration name

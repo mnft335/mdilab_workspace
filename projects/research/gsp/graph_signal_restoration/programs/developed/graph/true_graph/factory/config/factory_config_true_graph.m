@@ -4,12 +4,12 @@ function config_true_graph = factory_config_true_graph(param, arg)
 
         case "generate"
 
-            % Get an adjacency matrix and coordinates
+            % Generate an adjacency matrix and coordinates
             config_adjacency_matrix = factory_config_adjacency_matrix(param.adjacency_matrix, arg);
             adjacency_matrix = config_adjacency_matrix.adjacency_matrix;
             config_true_graph.coordinates = config_adjacency_matrix.coordinates;
 
-            % Get true forward weights
+            % Create a function handle that generates true forward weights
             config_true_forward_weights = factory_config_true_forward_weights(param.true_forward_weights, arg);
             generate_true_forward_weights = config_true_forward_weights.generate_true_forward_weights;
 

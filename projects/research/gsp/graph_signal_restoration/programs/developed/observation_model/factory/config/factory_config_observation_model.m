@@ -5,12 +5,12 @@ function config_observation_model = factory_config_observation_model(param, arg)
         case "inpainting"
 
             % Create a function handle that generates a signal mask
-            random_stream = get_random_stream(param.random_seed_signal_mask, "generate_idx_signal_to_mask");
+            random_stream = create_random_stream(param.random_seed_signal_mask, "generate_idx_signal_to_mask");
             idx_signal_to_mask = @(num_nodes) sample_random_indices(random_stream, num_nodes, int64(num_nodes * param.masking_ratio));
-            generate_signal_mask = @(num_nodes) apply_partial_data(ones(num_nodes, 1), idx_signal_to_mask(num_nodes), @(z) 0);
+            generate_signal_mask = @(num_nodes) apply_partial_elements(ones(num_nodes, 1), idx_signal_to_mask(num_nodes), @(z) 0);
 
             % Create a function handle that generates signal noise
-            random_stream = get_random_stream(param.random_seed_signal_noise, "generate_signal_noise");
+            random_stream = create_random_stream(param.random_seed_signal_noise, "generate_signal_noise");
             generate_signal_noise = @(vector) param.std_dev * sample_gaussian(random_stream, [numel(vector), 1]);
 
             % Create a function handle that generates the observation model of an inpainting problem

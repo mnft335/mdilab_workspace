@@ -26,6 +26,3 @@ param.observation_model.std_dev = 0;
 param.observation_model.random_seed_signal_noise = 1;
 
 param.optimization.type = "glr";
-
-path.path_result_registry = "projects/research/gsp/graph_signal_restoration/data/result_registry";
-path.path_true_graph_registry = "projects/research/gsp/graph_signal_restoration/data/true_graph_registry";

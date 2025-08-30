@@ -1,4 +1,6 @@
+resources
 dataset
 *.jpg
 *.eps
 *.pdf
+*.mat

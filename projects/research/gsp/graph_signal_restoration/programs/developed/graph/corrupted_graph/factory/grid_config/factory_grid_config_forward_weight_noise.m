@@ -11,7 +11,7 @@ function grid_config_forward_weight_noise = factory_grid_config_forward_weight_n
             grid_config_forward_weight_noise.parameter_range = {param.std_dev, param.random_seed};
 
             % Create the grid configuration name
-            grid_config_forward_weight_noise.configuration_name = {"forward_weight_noise=" + string(param.type)};
+            grid_config_forward_weight_noise.configuration_name = {"forward_weight_noise=" + param.type};
 
         otherwise
 

@@ -5,7 +5,7 @@ function config_true_signal = factory_config_true_signal(param, arg)
         % Sample smooth signals on a graph
         case "smooth_sampling"
 
-            % Get a function handle that generates smooth sampling coefficients
+            % Create a function handle that generates smooth sampling coefficients
             config_smooth_sampling_coefficients = factory_config_smooth_sampling_coefficients(param.smooth_sampling_coefficients, arg);
             generate_smooth_sampling_coefficients = config_smooth_sampling_coefficients.generate_smooth_sampling_coefficients;
 

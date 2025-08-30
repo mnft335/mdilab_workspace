@@ -1,4 +1,4 @@
-function save_file(path_file, data)
+function save_file(data, path_file)
 
     % Create directories if they don't exist
     path_directory = fileparts(path_file);

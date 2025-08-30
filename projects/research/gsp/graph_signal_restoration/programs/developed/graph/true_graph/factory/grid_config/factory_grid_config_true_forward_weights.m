@@ -11,7 +11,7 @@ function grid_config_true_forward_weights = factory_grid_config_true_forward_wei
             grid_config_true_forward_weights.parameter_range = {param.random_seed};
 
             % Create the grid configuration name
-            grid_config_true_forward_weights.configuration_name = {"true_forward_weights=" + string(param.type)};
+            grid_config_true_forward_weights.configuration_name = {"true_forward_weights=" + param.type};
 
         otherwise
 

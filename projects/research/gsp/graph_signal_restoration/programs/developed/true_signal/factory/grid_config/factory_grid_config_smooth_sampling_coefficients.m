@@ -11,7 +11,7 @@ function grid_config_smooth_sampling_coefficients = factory_grid_config_smooth_s
             grid_config_smooth_sampling_coefficients.parameter_range = {param.std_dev, param.sampling_ratio, param.random_seed};
 
             % Create the grid configuration name
-            grid_config_smooth_sampling_coefficients.configuration_name = {"smooth_sampling_coefficients=" + string(param.type)};
+            grid_config_smooth_sampling_coefficients.configuration_name = {"smooth_sampling_coefficients=" + param.type};
 
         otherwise
 

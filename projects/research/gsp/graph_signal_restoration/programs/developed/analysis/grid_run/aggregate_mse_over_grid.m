@@ -18,8 +18,11 @@ function mse_over_grid = aggregate_mse_over_grid(param, arg)
         % Create a "param" struct for this iteration
         param_single_run = create_param_on_grid(grid_config_collection, index_grid, i);
 
+        % Create all configurations for this iteration
+        config_collection = generate_config_collection(param_single_run, arg);
+
         % Load the result
-        result = load_result(param_single_run, arg);
+        result = load_result(config_collection);
 
         % Calculate MSE
         mse_over_grid(i) = compute_mse(result, param_single_run);

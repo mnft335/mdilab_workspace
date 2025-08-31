@@ -4,14 +4,7 @@ param.true_graph.adjacency_matrix.city_name = ["Rome"];
 param.true_graph.true_forward_weights.type = "gaussian";
 param.true_graph.true_forward_weights.random_seed = 1;
 
-param.corrupted_graph.type = "corrupt";
-param.corrupted_graph.forward_weight_corruption.type = "additive";
-param.corrupted_graph.forward_weight_corruption.idx_to_corrupt.type = "random";
-param.corrupted_graph.forward_weight_corruption.idx_to_corrupt.corruption_ratio = [0.5, 1.0];
-param.corrupted_graph.forward_weight_corruption.idx_to_corrupt.random_seed = 1:10;
-param.corrupted_graph.forward_weight_corruption.noise.type = "gaussian";
-param.corrupted_graph.forward_weight_corruption.noise.std_dev = [0.5, 1.0];
-param.corrupted_graph.forward_weight_corruption.noise.random_seed = 1:10;
+param.corrupted_graph.type = "all1";
 
 param.true_signal.type = "smooth_sampling";
 param.true_signal.smooth_sampling_coefficients.type = "gaussian";

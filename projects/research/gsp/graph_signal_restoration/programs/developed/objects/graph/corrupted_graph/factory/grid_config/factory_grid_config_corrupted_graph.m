@@ -17,6 +17,11 @@ function grid_config_corrupted_graph = factory_grid_config_corrupted_graph(param
             grid_config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}, ...
                                                               grid_config_forward_weight_corruption.configuration_name];
 
+        case "all1"
+
+            % Create a configuration name
+            grid_config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}];
+
         otherwise
 
             error("Invalid type for ""corrupted_graph"": %s", param.type);

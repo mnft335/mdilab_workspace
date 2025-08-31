@@ -19,6 +19,12 @@ function grid_config_corrupted_graph = factory_grid_config_corrupted_graph(param
 
         case "all1"
 
+            % Create a cell of parameter names
+            grid_config_corrupted_graph.parameter_name = {};
+
+            % Create a cell of parameter ranges
+            grid_config_corrupted_graph.parameter_range = {};
+
             % Create a configuration name
             grid_config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}];
 

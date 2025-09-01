@@ -7,7 +7,7 @@ function config_glr = generate_config_glr(graph, true_signal, observation_model)
     config_glr.gradient_operator_adjoint = @(z) graph.Diff' * z;
 
     % Create an observed signal
-    config_glr.observed_signal = config_glr.observation_operator(true_signal) + observation_model.signal_noise;
+    config_glr.observed_signal = observation_model.observation_operator(true_signal) + observation_model.signal_noise;
 
     % Formulation parameters
     config_glr.signal_lower_bound = 0;

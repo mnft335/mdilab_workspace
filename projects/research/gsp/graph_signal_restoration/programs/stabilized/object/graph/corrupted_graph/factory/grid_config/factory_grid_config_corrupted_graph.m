@@ -17,7 +17,7 @@ function grid_config_corrupted_graph = factory_grid_config_corrupted_graph(param
             grid_config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}, ...
                                                               grid_config_forward_weight_corruption.configuration_name];
 
-        case "all1"
+        case "no_corruption"
 
             % Create a cell of parameter names
             grid_config_corrupted_graph.parameter_name = {};
@@ -25,8 +25,19 @@ function grid_config_corrupted_graph = factory_grid_config_corrupted_graph(param
             % Create a cell of parameter ranges
             grid_config_corrupted_graph.parameter_range = {};
 
-            % Create a configuration name
-            grid_config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}];
+            % Create the configuration name
+            grid_config_corrupted_graph.configuration_name = {"corrupted_graph=" + param.type};
+
+        case "homogeneous"
+
+            % Create a cell of parameter names
+            grid_config_corrupted_graph.parameter_name = {};
+
+            % Create a cell of parameter ranges
+            grid_config_corrupted_graph.parameter_range = {};
+
+            % Create the configuration name
+            grid_config_corrupted_graph.configuration_name = {"corrupted_graph=" + param.type};
 
         otherwise
 

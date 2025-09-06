@@ -14,5 +14,6 @@ function random_stream_ids = get_random_stream_ids()
     random_stream_ids("generate_forward_weight_noise:truncated_gaussian") = 1000;
     random_stream_ids("generate_idx_signal_to_mask") = 1100;
     random_stream_ids("generate_signal_noise") = 1200;
+    random_stream_ids("generate_idx_initial_forward_weights_to_modify") = 1300;
 
 end

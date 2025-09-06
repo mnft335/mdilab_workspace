@@ -1,6 +1,6 @@
 function result = solver_proposal_1(config_proposal_1)
 
-    prox_conj_l2_ball = prox.conjugate(@(z, gamma) prox.l2_ball(z, config_proposal_1.observed_signal, config_proposal_1.radius_l2_ball));
+    prox_conj_l2_ball = prox.conjugate(@(z, gamma) prox.l2_ball(z, gamma, config_proposal_1.observed_signal, config_proposal_1.radius_l2_ball));
     prox_conj_l1 = prox.conjugate(@(z, gamma) prox.l1(z, gamma, config_proposal_1.coefficient_l1));
     prox_conj_l2 = prox.conjugate(@(z, gamma) prox.l2(z, gamma, 1 - config_proposal_1.coefficient_l1));
 
@@ -12,8 +12,8 @@ function result = solver_proposal_1(config_proposal_1)
     formulation_config.grad_f = @(z) {zeros(size(z{1})), ...
                                       zeros(size(z{2}))};
 
-    formulation_config.prox_g = @(z, gamma) {prox.box(z{1}, config_proposal_1.signal_lower_bound, config_proposal_1.signal_upper_bound), ...
-                                             prox.zero(z{2})};
+    formulation_config.prox_g = @(z, gamma) {prox.box(z{1}, gamma{1}, config_proposal_1.signal_lower_bound, config_proposal_1.signal_upper_bound), ...
+                                             prox.zero(z{2}, gamma{2})};
     formulation_config.prox_h_conj = @(z, gamma) {prox_conj_l2_ball(z{1}, gamma{1}), ...
                                                   prox_conj_l1(z{2}, gamma{2}), ...
                                                   prox_conj_l2(z{3}, gamma{3})};
@@ -29,9 +29,9 @@ function result = solver_proposal_1(config_proposal_1)
                          config_proposal_1.initial_dual_variable_l1, ...
                          config_proposal_1.initial_dual_variable_l2};
     
-    loop_config.stopping_criteria = shared_config.stopping_criteria;
-    loop_config.before_iteration = shared_config.before_iteration;
-    loop_config.after_iteration = shared_config.after_iteration;
+    loop_config.stopping_criteria = config_proposal_1.stopping_criteria;
+    loop_config.before_iteration = config_proposal_1.before_iteration;
+    loop_config.after_iteration = config_proposal_1.after_iteration;
 
-    result = solve_pds(formulation_config, pds_config, loop_config);
+    result = pds_solver(formulation_config, pds_config, loop_config);
 end

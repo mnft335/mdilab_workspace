@@ -1,13 +1,16 @@
 function weight_matrix = create_weight_matrix(adjacency_matrix, forward_weights)
 
-    % Shift the forward weights to make them positive (larger than eps)
-    forward_weights = forward_weights + max(0, max(- forward_weights + eps));
+    % Shift the forward weights to make them nonnegative
+    forward_weights = forward_weights + max(0, max(- forward_weights));
 
-    % Normalize the forward weights to make the mean to 1
+    % Normalize the forward weights to mean 1
     forward_weights = forward_weights / mean(forward_weights);
 
+    % Shift the forward weights less than "eps" by "eps"
+    forward_weights = forward_weights + max(0, max(- forward_weights + eps));
+
     % Set the forward weights to a weight matrix
-    weight_matrix = assign_partial_elements(triu(adjacency_matrix, 1), triu(adjacency_matrix, 1) ~= 0, forward_weights);
+    weight_matrix = assign_partial_elements(triu(adjacency_matrix, 1), triu(adjacency_matrix, 1) > 0, forward_weights);
 
     % Set the backward weights symmetrically
     weight_matrix = weight_matrix + weight_matrix.';

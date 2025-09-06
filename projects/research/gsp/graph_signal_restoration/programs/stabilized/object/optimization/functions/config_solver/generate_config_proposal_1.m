@@ -19,7 +19,7 @@ function config_proposal_1 = generate_config_proposal_1(graph, true_signal, obse
     config_proposal_1.radius_l2_ball = 0.9 * sqrt(sum(abs(observation_model.signal_noise) > eps)) * observation_model.std_dev_signal_noise;
     config_proposal_1.coefficient_l1 = coefficient_l1;
 
-    % Define config_proposal_1
+    % PDS configurations
     config_proposal_1.step_size_primal_variable_signal = 1 / (1 + sqrt(graph.lmax));
     config_proposal_1.step_size_primal_variable_infimal_convolution = 1 / (max(graph.weights) + max(sqrt(graph.weights)));
     config_proposal_1.step_size_dual_variable_l2_ball = 1;
@@ -28,9 +28,10 @@ function config_proposal_1 = generate_config_proposal_1(graph, true_signal, obse
     config_proposal_1.initial_primal_variable_signal = zeros(graph.N, 1);
     config_proposal_1.initial_primal_variable_infimal_convolution = zeros(graph.Ne, 1);
     config_proposal_1.initial_dual_variable_l2_ball = zeros(graph.N, 1);
+    config_proposal_1.initial_dual_variable_l1 = zeros(graph.Ne, 1);
     config_proposal_1.initial_dual_variable_l2 = zeros(graph.Ne, 1);
 
-    % Define solver_specifics
+    % Solver configurations
     tolerance = 1e-9;
     config_proposal_1.stopping_criteria = @(config, state) is_converge_fixed_point_residual(config, state, tolerance);
     config_proposal_1.before_iteration = @increment;

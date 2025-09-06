@@ -14,6 +14,61 @@ function grid_config_optimization = factory_grid_config_optimization(param, arg)
             % Create the grid configuration name
             grid_config_optimization.configuration_name = {"optimization=" + param.type};
 
+        case "gtv"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {};
+            
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
+        case "proposal_1"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {{"coefficient_l1"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {param.coefficient_l1};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
+        case "proposal_2"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {{"coefficient_l1"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {param.coefficient_l1};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
+        case "proposal_3"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {{"coefficient_l1"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {param.coefficient_l1};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
+        case "proposal_4"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {{"coefficient_l1"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {param.coefficient_l1};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
         otherwise
 
             error("Invalid type for ""optimization"": %s", param.type);

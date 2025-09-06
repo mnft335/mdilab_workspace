@@ -23,6 +23,21 @@ function grid_config_forward_weight_corruption = factory_grid_config_forward_wei
                                                                         grid_config_idx_forward_weights_to_corrupt.configuration_name, ...
                                                                         grid_config_forward_weight_noise.configuration_name];
 
+        case "binary_flip"
+
+            % Create a grid configuration for indices of forward weights to corrupt
+            grid_config_idx_forward_weights_to_corrupt = factory_grid_config_idx_forward_weights_to_corrupt(param.idx_to_corrupt, arg);
+
+            % Create a cell of parameter names
+            grid_config_forward_weight_corruption.parameter_name = cellfun(@(z) [{"idx_to_corrupt"}, z], grid_config_idx_forward_weights_to_corrupt.parameter_name, 'UniformOutput', false);
+
+            % Create a cell of parameter ranges
+            grid_config_forward_weight_corruption.parameter_range = grid_config_idx_forward_weights_to_corrupt.parameter_range;
+
+            % Create the grid configuration name
+            grid_config_forward_weight_corruption.configuration_name = [{"forward_weight_corruption=" + param.type}, ...
+                                                                        grid_config_idx_forward_weights_to_corrupt.configuration_name];
+
         otherwise
 
             error("Invalid type for ""forward_weight_corruption"": %s", param.type);

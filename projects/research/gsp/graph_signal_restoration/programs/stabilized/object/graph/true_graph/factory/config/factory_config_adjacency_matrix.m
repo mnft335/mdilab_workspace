@@ -6,13 +6,25 @@ function config_adjacency_matrix = factory_config_adjacency_matrix(param, arg)
         case "gsp_traffic"
 
             % Load the adjacency matrix specified with the given city name
-            load(path_search(param.city_name));
-            config_adjacency_matrix.adjacency_matrix = W;
-            config_adjacency_matrix.coordinates = pos;
+            graph = load(path_search(param.city_name));
+            config_adjacency_matrix.adjacency_matrix = graph.A;
+            config_adjacency_matrix.coordinates = graph.pos;
 
             % Create the configuration name
             config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
                                                           "city_name=" + param.city_name};
+
+        % Create an adjacency matrix of a path graph
+        case "path"
+
+            % Create a path graph with the specified number of nodes
+            path_graph = gsp_path(param.num_nodes);
+            config_adjacency_matrix.adjacency_matrix = path_graph.A;
+            config_adjacency_matrix.coordinates = path_graph.coords;
+
+            % Create the configuration name
+            config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
+                                                          "num_nodes=" + param.num_nodes};
 
         otherwise
 

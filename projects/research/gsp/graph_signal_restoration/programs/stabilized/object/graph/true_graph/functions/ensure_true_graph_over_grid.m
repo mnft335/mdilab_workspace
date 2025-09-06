@@ -7,11 +7,14 @@ function ensure_true_graph_over_grid(grid_config_true_graph, arg)
     for i = 1:numel(index_grid{1})
 
         % Create a configuration for each parameter combination
-        param_on_grid = create_param_on_grid(grid_config_true_graph, index_grid, i);
-        config_true_graph = factory_config_true_graph(param_on_grid, arg);
+        param_collection_on_grid = create_param_collection_on_grid(grid_config_true_graph, index_grid, i);
+        config_true_graph = factory_config_true_graph(param_collection_on_grid, arg);
 
-        % Generate and save a true graph if it doesn't exist
-        ensure_true_graph(config_true_graph);
+        % Create a path to the true graph
+        path_true_graph = create_path_true_graph(config_true_graph);
+
+        % Generate the true graph if it doesn't exist
+        if ~exist(path_true_graph, 'file'), generate_and_save_true_graph(config_true_graph);end
 
     end
 

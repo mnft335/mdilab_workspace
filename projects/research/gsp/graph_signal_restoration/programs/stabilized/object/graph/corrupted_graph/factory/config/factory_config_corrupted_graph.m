@@ -10,23 +10,32 @@ function config_corrupted_graph = factory_config_corrupted_graph(param, arg)
             generate_corrupted_forward_weights = config_forward_weight_corruption.generate_corrupted_forward_weights;
 
             % Create a function handle that generates a corrupted graph
-            config_corrupted_graph.generate_corrupted_graph = @(true_graph) generate_new_graph(true_graph.W, generate_corrupted_forward_weights);
+            config_corrupted_graph.generate_corrupted_graph = @(true_graph) generate_new_graph(true_graph.W, generate_corrupted_forward_weights, true_graph.coords);
 
             % Create the configuration name
             config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}, ...
                                                          config_forward_weight_corruption.configuration_name];
 
-        % Set all weights to 1
-        case "all1"
+        % Make no corruption
+        case "no_corruption"
 
-            % Create a function handle that generates forward weights of all 1
+            % Create a function handle that generates a corrupted graph
+            config_corrupted_graph.generate_corrupted_graph = @(true_graph) true_graph;
+
+            % Create the configuration name
+            config_corrupted_graph.configuration_name = {"corrupted_graph=" + param.type};
+
+        % Set all weights to be homogeneous
+        case "homogeneous"
+
+            % Create a function handle that generates forward weights of all the same value
             generate_corrupted_forward_weights = @(forward_weights) ones(numel(forward_weights), 1);
 
             % Create a function handle that generates a corrupted graph
-            config_corrupted_graph.generate_corrupted_graph = @(true_graph) generate_new_graph(true_graph.W, generate_corrupted_forward_weights);
+            config_corrupted_graph.generate_corrupted_graph = @(true_graph) generate_new_graph(true_graph.W, generate_corrupted_forward_weights, true_graph.coords);
 
             % Create the configuration name
-            config_corrupted_graph.configuration_name = [{"corrupted_graph=" + param.type}];
+            config_corrupted_graph.configuration_name = {"corrupted_graph=" + param.type};
 
         otherwise
 

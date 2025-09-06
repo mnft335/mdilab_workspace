@@ -24,6 +24,9 @@ function grid_result = get_grid_result(grid_param_collection, mode, arg)
 
                 result{i} = get_result_on_grid(grid_config_collection, index_grid, i, arg);
 
+                % Update the "parfor" progress bar
+                parfor_progress;
+
             end
 
             % Clean up the "parfor" progress bar

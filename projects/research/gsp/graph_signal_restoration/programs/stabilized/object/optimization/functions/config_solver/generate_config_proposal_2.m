@@ -1,5 +1,5 @@
 function config_proposal_2 = generate_config_proposal_2(graph, true_signal, observation_model, coefficient_l1)
-    true_signal.' * graph.L * true_signal
+
     % Create operators in the PDS
     config_proposal_2.observation_operator = @(z) observation_model.observation_operator(z);
     config_proposal_2.observation_operator_adjoint = @(z) observation_model.observation_operator_adjoint(z);

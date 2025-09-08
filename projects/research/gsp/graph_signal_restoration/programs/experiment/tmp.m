@@ -24,7 +24,7 @@ grid_param_fixed.observation_model.random_seed_signal_mask = 1;
 grid_param_fixed.observation_model.std_dev = 0;
 grid_param_fixed.observation_model.random_seed_signal_noise = 1;
 
-grid_param_fixed.optimization.type = "glr";
+grid_param_fixed.optimization.type = "proposal_1";
 grid_param_fixed.optimization.coefficient_l1 = linspace(0.0001, 0.9999, 1000);
 
 % Define the parameter grid for corrupted graph configurations

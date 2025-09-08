@@ -28,22 +28,22 @@ function plot_infimal_convolution(result, arrangement)
 
     % Plot the true signal difference
     axes_object = nexttile(tiled_chart_layout);
-    plot_values_on_edges(true_graph, true_signal_difference);
+    plot_signal_difference(true_graph, true_signal_difference);
     axes_object.Title.String = "True difference";
 
     % Plot the corrupted signal difference
     axes_object = nexttile(tiled_chart_layout);
-    plot_values_on_edges(corrupted_graph, corrupted_signal_difference);
+    plot_signal_difference(corrupted_graph, corrupted_signal_difference);
     axes_object.Title.String = "Corrupted difference";
 
     % Plot the infimal convolution component in the L1 term
     axes_object = nexttile(tiled_chart_layout);
-    plot_values_on_edges(corrupted_graph, component_l1_term);
+    plot_signal_difference(corrupted_graph, component_l1_term);
     axes_object.Title.String = "Difference in L1";
 
     % Plot the infimal convolution component in the L2 term
     axes_object = nexttile(tiled_chart_layout);
-    plot_values_on_edges(corrupted_graph, corrupted_signal_difference - component_l1_term);
+    plot_signal_difference(corrupted_graph, corrupted_signal_difference - component_l1_term);
     axes_object.Title.String = "Difference in L2";
 
 end

@@ -1,4 +1,4 @@
-function plot_values_on_edges(graph_gsp_toolbox, edge_values)
+function plot_signal_difference(graph_gsp_toolbox, signal_difference)
 
     % Plot the graph, converting to MATLAB graph object
     graph_plot = plot(graph(graph_gsp_toolbox.A));
@@ -9,7 +9,7 @@ function plot_values_on_edges(graph_gsp_toolbox, edge_values)
 
     % Set edge color
     color_map_edges = jet(256);
-    graph_plot.EdgeColor = map_vector_to_color(edge_values, color_map_edges);
+    graph_plot.EdgeColor = map_vector_to_color(signal_difference, [-2, 2], color_map_edges);
 
     % Set edge width
     graph_plot.LineWidth = 1;

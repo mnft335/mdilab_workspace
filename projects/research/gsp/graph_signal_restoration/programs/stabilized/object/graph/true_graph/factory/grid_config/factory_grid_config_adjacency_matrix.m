@@ -24,6 +24,17 @@ function grid_config_adjacency_matrix = factory_grid_config_adjacency_matrix(par
             % Create the grid configuration name
             grid_config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type};
 
+        case "david_sensor_network"
+
+            % Create a cell of parameter names
+            grid_config_adjacency_matrix.parameter_name = {{"num_nodes"}};
+
+            % Create a cell of parameter ranges
+            grid_config_adjacency_matrix.parameter_range = {param.num_nodes};
+
+            % Create the grid configuration name
+            grid_config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type};
+
         otherwise
 
             error("Invalid type for ""adjacency_matrix"": %s", param.type);

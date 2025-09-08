@@ -26,6 +26,17 @@ function config_adjacency_matrix = factory_config_adjacency_matrix(param, arg)
             config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
                                                           "num_nodes=" + param.num_nodes};
 
+        case "david_sensor_network"
+
+            % Create a David sensor network graph with the specified number of nodes
+            david_sensor_network_graph = gsp_david_sensor_network(param.num_nodes);
+            config_adjacency_matrix.adjacency_matrix = david_sensor_network_graph.A;
+            config_adjacency_matrix.coordinates = david_sensor_network_graph.coords;
+            
+            % Create the configuration name
+            config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
+                                                          "num_nodes=" + param.num_nodes};
+
         otherwise
 
             error("Invalid type for ""adjacency_matrix"": %s", param.type);

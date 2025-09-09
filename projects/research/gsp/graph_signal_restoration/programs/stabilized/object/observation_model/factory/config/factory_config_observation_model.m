@@ -23,6 +23,20 @@ function config_observation_model = factory_config_observation_model(param, arg)
                                                            "std_dev=" + string(param.std_dev), ...
                                                            "random_seed_signal_noise=" + string(param.random_seed_signal_noise)};
 
+        case "denoising"
+
+            % Create a function handle that generates signal noise
+            random_stream = create_random_stream(param.random_seed_signal_noise, "generate_signal_noise");
+            generate_signal_noise = @(vector) param.std_dev * sample_gaussian(random_stream, [numel(vector), 1]);
+
+            % Create a function handle that generates the observation model of a denoising problem
+            config_observation_model.generate_observation_model = @(graph) generate_observation_model_denoising(graph, generate_signal_noise, param.std_dev);
+
+            % Create the configuration name
+            config_observation_model.configuration_name = {"observation_model=" + param.type, ...
+                                                           "std_dev=" + string(param.std_dev), ...
+                                                           "random_seed_signal_noise=" + string(param.random_seed_signal_noise)};
+
         otherwise
 
             error("Invalid type for ""observation_model"": %s", param.type);

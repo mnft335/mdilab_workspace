@@ -15,7 +15,7 @@ function plot_restoration_error(result)
     config_node.color_map = jet(256);
     config_edge.values = abs(weight_noise);
     color_map = gray(288);
-    config_edge.color_map = color_map(1:256, :);
+    config_edge.color_map = flipud(color_map(1:256, :));
 
     % Plot the signal error and weight noise
     plot_values_on_graph(result.object_collection.true_graph, config_node, config_edge);

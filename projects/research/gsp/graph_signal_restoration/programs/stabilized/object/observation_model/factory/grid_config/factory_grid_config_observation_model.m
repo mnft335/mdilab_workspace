@@ -13,6 +13,17 @@ function grid_config_observation_model = factory_grid_config_observation_model(p
             % Create the grid configuration name
             grid_config_observation_model.configuration_name = {"observation_model=" + param.type};
 
+        case "denoising"
+
+            % Create a cell of parameter names
+            grid_config_observation_model.parameter_name = {{"std_dev"}, {"random_seed_signal_noise"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_observation_model.parameter_range = {param.std_dev, param.random_seed_signal_noise};
+
+            % Create the grid configuration name
+            grid_config_observation_model.configuration_name = {"observation_model=" + param.type};
+
         otherwise
 
             error("Invalid type for ""observation_model"": %s", param.type);

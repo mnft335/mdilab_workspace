@@ -10,7 +10,7 @@ function plot_values_on_graph(graph_gsp_toolbox, config_node, config_edge)
     graph_plot.EdgeColor = map_vector_to_color(config_edge.values, [0, 1], config_edge.color_map);
 
     % Set node size
-    graph_plot.MarkerSize = 3;
+    graph_plot.MarkerSize = 5;
 
     % Set edge width
     graph_plot.LineWidth = 1;

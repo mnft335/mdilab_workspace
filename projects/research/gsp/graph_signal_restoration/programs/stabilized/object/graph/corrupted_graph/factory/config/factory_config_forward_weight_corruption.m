@@ -29,7 +29,7 @@ function config_forward_weight_corruption = factory_config_forward_weight_corrup
             generate_idx_forward_weights_to_corrupt = config_idx_forward_weights_to_corrupt.generate_idx_forward_weights_to_corrupt;
 
             % Create a function handle that flips the forward weights on partial indices
-            config_forward_weight_corruption.generate_corrupted_forward_weights = @(true_forward_weights) apply_partial_elements(true_forward_weights, generate_idx_forward_weights_to_corrupt(true_forward_weights), @flip_binary_forward_weights);
+            config_forward_weight_corruption.generate_corrupted_forward_weights = @(true_forward_weights) apply_partial_elements(true_forward_weights, generate_idx_forward_weights_to_corrupt(true_forward_weights), @(binary_forward_weights) flip_binary_forward_weights(binary_forward_weights, min(true_forward_weights), max(true_forward_weights)));
 
             % Create the configuration name
             config_forward_weight_corruption.configuration_name = [{"forward_weight_corruption=" + param.type}, ...

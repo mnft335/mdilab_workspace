@@ -13,15 +13,15 @@ function config_glr = generate_config_glr(graph, true_signal, observation_model)
     config_glr.signal_lower_bound = 0;
     config_glr.signal_upper_bound = 1;
     config_glr.radius_l2_ball = 0.9 * sqrt(sum(abs(observation_model.signal_noise) > eps)) * observation_model.std_dev_signal_noise;
-    config_glr.coefficient_l2 = 1 / 2;
+    config_glr.coefficient_l2_squared= 1;
 
     % PDS configurations
     config_glr.step_size_primal_variable = 1 / (1 + sqrt(graph.lmax));
     config_glr.step_size_dual_variable_l2_ball = 1;
-    config_glr.step_size_dual_variable_l2 = 1 / sqrt(graph.lmax);
+    config_glr.step_size_dual_variable_l2_squared= 1 / sqrt(graph.lmax);
     config_glr.initial_primal_variable = zeros(graph.N, 1);
     config_glr.initial_dual_variable_l2_ball = zeros(graph.N, 1);
-    config_glr.initial_dual_variable_l2 = zeros(graph.Ne, 1);
+    config_glr.initial_dual_variable_l2_squared= zeros(graph.Ne, 1);
 
     % Solver configurations
     tolerance = 1e-9;

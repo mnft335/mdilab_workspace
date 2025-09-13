@@ -19,11 +19,11 @@ function config_proposal_2 = generate_config_proposal_2(graph, true_signal, obse
     config_proposal_2.step_size_primal_variable_signal = 1 / (1 + sqrt(graph.lmax));
     config_proposal_2.step_size_primal_variable_infimal_convolution = 1;
     config_proposal_2.step_size_dual_variable_l2_ball = 1;
-    config_proposal_2.step_size_dual_variable_l2 = 1 / (1 + sqrt(graph.lmax));
+    config_proposal_2.step_size_dual_variable_l2_squared= 1 / (1 + sqrt(graph.lmax));
     config_proposal_2.initial_primal_variable_signal = zeros(graph.N, 1);
     config_proposal_2.initial_primal_variable_infimal_convolution = zeros(graph.Ne, 1);
     config_proposal_2.initial_dual_variable_l2_ball = zeros(graph.N, 1);
-    config_proposal_2.initial_dual_variable_l2 = zeros(graph.Ne, 1);
+    config_proposal_2.initial_dual_variable_l2_squared= zeros(graph.Ne, 1);
 
     % Solver configurations
     tolerance = 1e-9;

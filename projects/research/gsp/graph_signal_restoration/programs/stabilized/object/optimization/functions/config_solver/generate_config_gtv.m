@@ -14,7 +14,7 @@ function config_gtv = generate_config_gtv(graph, true_signal, observation_model)
     config_gtv.signal_lower_bound = 0;
     config_gtv.signal_upper_bound = 1;
     config_gtv.radius_l2_ball = 0.9 * sqrt(sum(abs(observation_model.signal_noise) > eps)) * observation_model.std_dev_signal_noise;
-    config_gtv.coefficient_l1 = 0.01 * norm_upper_bound_weighted_incidence_operator;
+    config_gtv.coefficient_l1 = 0.002 * norm_upper_bound_weighted_incidence_operator;
 
     % PDS configurations
     config_gtv.step_size_primal_variable = 1 / (1 + norm_upper_bound_weighted_incidence_operator);

@@ -10,7 +10,7 @@ function weight_matrix = create_weight_matrix(adjacency_matrix, forward_weights)
     forward_weights = forward_weights + max(0, max(- forward_weights + eps));
 
     % Set the forward weights to a weight matrix
-    weight_matrix = assign_partial_elements(triu(adjacency_matrix, 1), triu(adjacency_matrix, 1) > 0, forward_weights);
+    weight_matrix = assign_partial_elements(tril(adjacency_matrix), tril(adjacency_matrix) > 0, forward_weights);
 
     % Set the backward weights symmetrically
     weight_matrix = weight_matrix + weight_matrix.';

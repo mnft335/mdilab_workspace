@@ -1,7 +1,7 @@
-function optimal_grid_result_collection = get_optimal_grid_result_collection_proposal(grid_param_skeleton, num_points, mode_grid_run, arg)
+function optimal_grid_result_collection = get_optimal_grid_result_collection_proposal(grid_param_skeleton, mode_grid_run, arg)
 
     % Create a list of proposed method names to iterate over
-    list_proposal = ["proposal_1", "proposal_2", "proposal_3", "proposal_4"];
+    list_proposal = ["proposal_2", "proposal_3", "proposal_4"];
 
     % Preallocate the result collection
     optimal_grid_result_collection = cell(1, numel(list_proposal));
@@ -10,7 +10,7 @@ function optimal_grid_result_collection = get_optimal_grid_result_collection_pro
     for i = 1:numel(list_proposal)
 
         grid_param_collection = setfield(grid_param_skeleton, "optimization", "type", list_proposal(i));
-        optimal_grid_result_collection{i} = get_optimal_grid_result_over_hyperparameter(grid_param_collection, num_points, mode_grid_run, arg);
+        optimal_grid_result_collection{i} = get_optimal_grid_result_over_hyperparameter(grid_param_collection, mode_grid_run, arg);
 
     end
 

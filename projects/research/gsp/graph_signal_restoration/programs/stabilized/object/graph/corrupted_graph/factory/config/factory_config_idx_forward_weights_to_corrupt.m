@@ -14,6 +14,14 @@ function config_idx_forward_weights_to_corrupt = factory_config_idx_forward_weig
                                                                         "corruption_ratio=" + string(param.corruption_ratio), ...
                                                                         "random_seed=" + string(param.random_seed)};
 
+        case "all"
+
+            % Create a function handle that returns all indices of the forward weights to corrupt
+            config_idx_forward_weights_to_corrupt.generate_idx_forward_weights_to_corrupt = @(forward_weights) 1:numel(forward_weights);
+
+            % Create the configuration name
+            config_idx_forward_weights_to_corrupt.configuration_name = {"idx_forward_weights_to_corrupt=" + param.type};
+
         case "specify"
 
             % Define a list of cuts

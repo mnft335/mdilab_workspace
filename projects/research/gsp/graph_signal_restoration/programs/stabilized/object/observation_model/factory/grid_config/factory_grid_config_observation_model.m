@@ -24,6 +24,17 @@ function grid_config_observation_model = factory_grid_config_observation_model(p
             % Create the grid configuration name
             grid_config_observation_model.configuration_name = {"observation_model=" + param.type};
 
+        case "inpainting_without_noise"
+
+            % Create a cell of parameter names
+            grid_config_observation_model.parameter_name = {{"masking_ratio"}, {"random_seed_signal_mask"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_observation_model.parameter_range = {param.masking_ratio, param.random_seed_signal_mask};
+
+            % Create the grid configuration name
+            grid_config_observation_model.configuration_name = {"observation_model=" + param.type};
+
         otherwise
 
             error("Invalid type for ""observation_model"": %s", param.type);

@@ -22,7 +22,7 @@ grid_param_skeleton.true_signal.smooth_sampling_coefficients.sampling_ratio = 0.
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.random_seed = 1;
 
 grid_param_skeleton.observation_model.type = "inpainting_without_noise";
-grid_param_skeleton.observation_model.masking_ratio = 0.1:0.1;
+grid_param_skeleton.observation_model.masking_ratio = 0.1:0.1:0.2;
 grid_param_skeleton.observation_model.random_seed_signal_mask = 1:20;
 
 grid_stride = 0.05;

@@ -19,7 +19,7 @@ for i = 1:numel(shared_random_seed)
     grid_param_skeleton.corrupted_graph.type = "corrupt";
     grid_param_skeleton.corrupted_graph.forward_weight_corruption.type = "binary_flip";
     grid_param_skeleton.corrupted_graph.forward_weight_corruption.idx_to_corrupt.type = "random";
-    grid_param_skeleton.corrupted_graph.forward_weight_corruption.idx_to_corrupt.corruption_ratio = 0.3;
+    grid_param_skeleton.corrupted_graph.forward_weight_corruption.idx_to_corrupt.corruption_ratio = 0.1;
     grid_param_skeleton.corrupted_graph.forward_weight_corruption.idx_to_corrupt.random_seed = 1;
 
     grid_param_skeleton.true_signal.type = "smooth_sampling";
@@ -34,7 +34,7 @@ for i = 1:numel(shared_random_seed)
     grid_param_skeleton.observation_model.std_dev = 0.05;
     grid_param_skeleton.observation_model.random_seed_signal_noise = shared_random_seed(i);
 
-    grid_stride = 0.05;
+    grid_stride = 0.005;
     range_hyperparameter = linspace(0, 1, int64(1 / grid_stride) + 1);
     grid_param_skeleton.optimization.coefficient_l1 = range_hyperparameter(2:end-1);
 

@@ -61,6 +61,16 @@ function config_optimization = factory_config_optimization(param, arg)
             config_optimization.configuration_name = {"optimization=" + param.type, ...
                                                       "coefficient_l1=" + string(param.coefficient_l1)};
 
+        case "proposal_5"
+
+            % Create a function handle that generates an optimization struct for the proposed method 5
+            config_optimization.generate_optimization = @(graph, true_signal, observation_model) struct("config_solver", generate_config_proposal_5(graph, true_signal, observation_model, param.coefficient_l1), ...
+                                                                                                        "solver", @solver_proposal_5);
+
+            % Create the configuration name
+            config_optimization.configuration_name = {"optimization=" + param.type, ...
+                                                      "coefficient_l1=" + string(param.coefficient_l1)};
+
         otherwise
 
             error("Invalid type for ""optimization"": %s", param.type);

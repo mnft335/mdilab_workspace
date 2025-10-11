@@ -29,5 +29,12 @@ function graph_plot = plot_observed_signal_for_paper(result)
 
     % Plot the observed signal on the graph, with the corrupted edges highlighted
     graph_plot = plot_values_on_graph_for_paper_tmp(graph_gsp_toolbox, config_node, config_edge);
+    marker = num2cell(repmat("o", numel(observed_signal), 1));
+    marker(indices_masked_nodes) = num2cell(repmat("x", numel(indices_masked_nodes), 1));
+    graph_plot.Marker = [marker{:}];
+    
+    marker_size = repmat(8, numel(observed_signal), 1);
+    marker_size(indices_masked_nodes) = 12;
+    graph_plot.MarkerSize = marker_size;
 
 end

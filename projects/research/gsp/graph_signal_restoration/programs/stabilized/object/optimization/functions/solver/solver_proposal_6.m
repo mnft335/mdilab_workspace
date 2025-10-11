@@ -1,0 +1,13 @@
+function result = solver_proposal_6(config_proposal_6)
+
+    prox_conj_l2_ball = prox.conjugate(@(z, gamma) prox.l2_ball(z, gamma, config_proposal_6.observed_signal, config_proposal_6.radius_l2_ball));
+    prox_conj_l2_squared = prox.conjugate(@(z, gamma) prox.l2_squared(z, gamma, 1 - config_proposal_6.coefficient_l1));
+
+    formulation_config.L = @(z) {config_proposal_6.observation_operator(z{1}), ...
+                                 config_proposal_6.gradient_operator(z{1}) - z{2}};
+    formulation_config.Lt = @(z) {config_proposal_6.observation_operator_adjoint(z{1}) + config_proposal_6.gradient_operator_adjoint(z{2}), ...
+                                  - z{2}};
+    formulation_config.grad_f = @(z) {zeros(size(z{1})), ...
+                                      zeros(size(z{2}))};
+    formulation_config.prox_g = @(z, gamma) {prox.box(z{1}, gamma{1}, config_proposal_6.signal_lower_bound, config_proposal_6.signal_upper_bound), ...
+                                             prox.l1(z{2}, gamma{2}, config_proposal_6.coefficient_l1)};

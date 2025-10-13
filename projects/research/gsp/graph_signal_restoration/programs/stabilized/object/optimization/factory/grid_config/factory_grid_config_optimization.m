@@ -80,6 +80,28 @@ function grid_config_optimization = factory_grid_config_optimization(param, arg)
             % Create the grid configuration name
             grid_config_optimization.configuration_name = {"optimization=" + param.type};
 
+        case "proposal_6"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {{"coefficient_huber"}, {"threshold_huber"}};
+            
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {param.coefficient_huber, param.threshold_huber};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
+        case "proposal_7"
+
+            % Create a cell of parameter names
+            grid_config_optimization.parameter_name = {{"coefficient_huber"}, {"threshold_huber"}};
+
+            % Create a cell of parameter ranges
+            grid_config_optimization.parameter_range = {param.coefficient_huber, param.threshold_huber};
+
+            % Create the grid configuration name
+            grid_config_optimization.configuration_name = {"optimization=" + param.type};
+
         otherwise
 
             error("Invalid type for ""optimization"": %s", param.type);

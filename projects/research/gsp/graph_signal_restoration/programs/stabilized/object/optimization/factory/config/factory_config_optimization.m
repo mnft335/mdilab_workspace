@@ -71,6 +71,28 @@ function config_optimization = factory_config_optimization(param, arg)
             config_optimization.configuration_name = {"optimization=" + param.type, ...
                                                       "coefficient_l1=" + string(param.coefficient_l1)};
 
+        case "proposal_6"
+
+            % Create a function handle that generates an optimization struct for the proposed method 6
+            config_optimization.generate_optimization = @(graph, true_signal, observation_model) struct("config_solver", generate_config_proposal_6(graph, true_signal, observation_model, param.coefficient_huber, param.threshold_huber), ...
+                                                                                                        "solver", @solver_proposal_6);
+
+            % Create the configuration name
+            config_optimization.configuration_name = {"optimization=" + param.type, ...
+                                                      "coefficient_huber=" + string(param.coefficient_huber), ...
+                                                      "threshold_huber=" + string(param.threshold_huber)};
+
+        case "proposal_7"
+
+            % Create a function handle that generates an optimization struct for the proposed method 7
+            config_optimization.generate_optimization = @(graph, true_signal, observation_model) struct("config_solver", generate_config_proposal_7(graph, true_signal, observation_model, param.coefficient_huber, param.threshold_huber), ...
+                                                                                                        "solver", @solver_proposal_7);
+
+            % Create the configuration name
+            config_optimization.configuration_name = {"optimization=" + param.type, ...
+                                                      "coefficient_huber=" + string(param.coefficient_huber), ...
+                                                      "threshold_huber=" + string(param.threshold_huber)};
+
         otherwise
 
             error("Invalid type for ""optimization"": %s", param.type);

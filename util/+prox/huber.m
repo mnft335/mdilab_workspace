@@ -1,9 +1,9 @@
 % Proximal operator for the Huber function
 
-function result = huber(argument, stepsize, threshold, multiplier)
+function result = huber(argument, original_stepsize, threshold, coefficient)
 
-    % Absorb the multiplier into the threshold
-    threshold = threshold * multiplier;
+    % Absorb the coefficient into the stepsize
+    stepsize = original_stepsize * coefficient;
 
     % Preallocate result
     result = zeros(size(argument));

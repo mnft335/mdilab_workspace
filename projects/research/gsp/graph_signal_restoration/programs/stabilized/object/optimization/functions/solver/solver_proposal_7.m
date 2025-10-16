@@ -17,11 +17,11 @@ function result = solver_proposal_7(config_proposal_7)
     pds_config.gamma_x = {config_proposal_7.step_size_primal_variable_signal, ...
                           config_proposal_7.step_size_primal_variable_infimal_convolution};
     pds_config.gamma_y = {config_proposal_7.step_size_dual_variable_l2_ball, ...
-                          config_proposal_7.step_size_dual_variable_l2_squared};
+                          config_proposal_7.step_size_dual_variable_l2};
     pds_config.x_init = {config_proposal_7.initial_primal_variable_signal, ...
                          config_proposal_7.initial_primal_variable_infimal_convolution};
     pds_config.y_init = {config_proposal_7.initial_dual_variable_l2_ball, ...
-                         config_proposal_7.initial_dual_variable_l2_squared}; 
+                         config_proposal_7.initial_dual_variable_l2}; 
 
     loop_config.stopping_criteria = config_proposal_7.stopping_criteria;
     loop_config.before_iteration = config_proposal_7.before_iteration;

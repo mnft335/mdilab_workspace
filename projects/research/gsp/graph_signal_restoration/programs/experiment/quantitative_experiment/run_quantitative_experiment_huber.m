@@ -20,8 +20,8 @@ grid_param_skeleton.true_signal.smooth_sampling_coefficients.std_dev = 1;
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.sampling_ratio = 0.3;
 
 grid_param_skeleton.observation_model.type = "inpainting_without_noise";
-grid_param_skeleton.observation_model.masking_ratio = 0.2;
-grid_param_skeleton.observation_model.random_seed_signal_mask = 1;
+grid_param_skeleton.observation_model.masking_ratio = [0.1, 0.2];
+grid_param_skeleton.observation_model.random_seed_signal_mask = 1:2;
 
 grid_stride_coefficient_huber = 0.005;
 range_hyperparameter_coefficient_huber = linspace(0, 1, int64(1 / grid_stride_coefficient_huber) + 1);

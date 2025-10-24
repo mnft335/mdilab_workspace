@@ -18,10 +18,11 @@ grid_param_skeleton.true_signal.type = "smooth_sampling";
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.type = "gaussian";
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.std_dev = 1;
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.sampling_ratio = 0.3;
+grid_param_skeleton.true_signal.smooth_sampling_coefficients.random_seed = 1;
 
 grid_param_skeleton.observation_model.type = "inpainting_without_noise";
 grid_param_skeleton.observation_model.masking_ratio = 0.2;
-grid_param_skeleton.observation_model.random_seed_signal_mask = 1:2;
+grid_param_skeleton.observation_model.random_seed_signal_mask = [];
 
 grid_stride_coefficient_huber = 0.005;
 range_hyperparameter_coefficient_huber = linspace(0, 1, int64(1 / grid_stride_coefficient_huber) + 1);
@@ -32,36 +33,36 @@ grid_param_skeleton.optimization.type = "proposal_7";
 grid_param_skeleton.optimization.coefficient_huber = range_hyperparameter_coefficient_huber(2:end-1);
 grid_param_skeleton.optimization.threshold_huber = range_param_skeleton.optimization.threshold_huber(2:end);
 
-% Define the range of random seed for smooth sampling coefficients
-random_seed_smooth_sampling_coefficients = 1:10;
+% Define the range of random seeds for signal masking
+random_seed_signal_mask = 1:20;
 
 % Preallocate a cell array to store the optimal results
-optimal_grid_results = cell(numel(random_seed_smooth_sampling_coefficients), 1);
+optimal_grid_results = cell(numel(random_seed_signal_mask), 1);
 
-% for i = 1:numel(random_seed_smooth_sampling_coefficients)
-for i = 1:10
+for i = 1:numel(random_seed_signal_mask)
 
     % Get the optimal grid results over hyperparameters
-    grid_param = setfield(grid_param_skeleton, "true_signal", "smooth_sampling_coefficients", "random_seed", random_seed_smooth_sampling_coefficients(i));
-    optimal_grid_results{i} = get_optimal_grid_result_over_hyperparameters(grid_param, "parallel", ["optimization.coefficient_huber", "optimization.threshold_huber"], []);
+    grid_param = setfield(grid_param_skeleton, "observation_model", "random_seed_signal_mask", random_seed_signal_mask(i));
+    optimal_grid_result_slice = get_optimal_grid_result_over_hyperparameters(grid_param, "parallel", ["optimization.coefficient_huber", "optimization.threshold_huber"], []);
+    optimal_grid_results{i} = optimal_grid_result_slice.result;
     disp("Done! - " + string(i));
 
 end
 
 % Get the dimension of the random seed
-dimension_random_seed = find_parameter_dimension(optimal_grid_results{1}.grid_config_collection, "observation_model.random_seed_signal_mask");
+dimension_random_seed = find_parameter_dimension(optimal_grid_result_slice.grid_config_collection, "observation_model.random_seed_signal_mask");
 
 % Concatenate the results in the axix of random seed
 optimal_grid_result = cat(dimension_random_seed, optimal_grid_results{:});
 
 % Compute NMSE for the optimal results
-nmse_optimal = compute_nmse_from_result(optimal_grid_result.result);
+nmse_optimal = compute_nmse_from_result(optimal_grid_result);
 
 % Average the NMSEs over the random seeds
 averaged_nmse_optimal = mean(nmse_optimal, dimension_random_seed);
 
 % Get the minimum and argmin of the NMSEs
-[min_nmse_optimal, argmin_nmse_optimal] = min(averaged_nmse_optimal, [], "all");
+[min_nmse_optimal, argmin_nmse_optimal] = min(averaged_nmse_optimal, [], dimension_random_seed);
 
 min_nmse_optimal
 argmin_nmse_optimal

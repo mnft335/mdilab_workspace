@@ -23,5 +23,6 @@ function optimal_grid_result = get_optimal_grid_result_over_hyperparameters(grid
     % Extract the optimal grid result over hyperparameters
     optimal_grid_result = setfield(grid_result, "result", grid_result.result(sub_optimal_hyperparameter{:}));
     optimal_grid_result.sub_optimal_hyperparameter = sub_optimal_hyperparameter;
+    clear("grid_result");
 
 end

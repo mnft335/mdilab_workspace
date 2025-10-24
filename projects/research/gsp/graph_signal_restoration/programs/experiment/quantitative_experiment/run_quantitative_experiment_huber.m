@@ -20,7 +20,7 @@ grid_param_skeleton.true_signal.smooth_sampling_coefficients.std_dev = 1;
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.sampling_ratio = 0.3;
 
 grid_param_skeleton.observation_model.type = "inpainting_without_noise";
-grid_param_skeleton.observation_model.masking_ratio = [0.1, 0.2];
+grid_param_skeleton.observation_model.masking_ratio = 0.2;
 grid_param_skeleton.observation_model.random_seed_signal_mask = 1:2;
 
 grid_stride_coefficient_huber = 0.005;
@@ -29,23 +29,22 @@ grid_stride_threshold_huber = 0.1;
 range_param_skeleton.optimization.threshold_huber = linspace(0, 5, int64(5 / grid_stride_threshold_huber) + 1);
 
 grid_param_skeleton.optimization.type = "proposal_7";
-% grid_param_skeleton.optimization.coefficient_huber = range_hyperparameter_coefficient_huber(2:end-1);
-grid_param_skeleton.optimization.coefficient_huber = [0.1, 0.2];
-% grid_param_skeleton.optimization.threshold_huber = range_param_skeleton.optimization.threshold_huber(2:end);
-grid_param_skeleton.optimization.threshold_huber = 1:2;
+grid_param_skeleton.optimization.coefficient_huber = range_hyperparameter_coefficient_huber(2:end-1);
+grid_param_skeleton.optimization.threshold_huber = range_param_skeleton.optimization.threshold_huber(2:end);
 
 % Define the range of random seed for smooth sampling coefficients
-random_seed_smooth_sampling_coefficients = 1:20;
+random_seed_smooth_sampling_coefficients = 1:10;
 
 % Preallocate a cell array to store the optimal results
 optimal_grid_results = cell(numel(random_seed_smooth_sampling_coefficients), 1);
 
 % for i = 1:numel(random_seed_smooth_sampling_coefficients)
-for i = 1:1
+for i = 1:10
 
     % Get the optimal grid results over hyperparameters
     grid_param = setfield(grid_param_skeleton, "true_signal", "smooth_sampling_coefficients", "random_seed", random_seed_smooth_sampling_coefficients(i));
     optimal_grid_results{i} = get_optimal_grid_result_over_hyperparameters(grid_param, "parallel", ["optimization.coefficient_huber", "optimization.threshold_huber"], []);
+    disp("Done! - " + string(i));
 
 end
 

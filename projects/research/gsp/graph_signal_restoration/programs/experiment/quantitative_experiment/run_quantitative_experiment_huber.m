@@ -1,3 +1,5 @@
+clear;
+
 % Define a grid parameter skeleton
 grid_param_skeleton.true_graph.type = "generate";
 grid_param_skeleton.true_graph.adjacency_matrix.type = "david_sensor_network";
@@ -21,7 +23,7 @@ grid_param_skeleton.true_signal.smooth_sampling_coefficients.sampling_ratio = 0.
 grid_param_skeleton.true_signal.smooth_sampling_coefficients.random_seed = 1;
 
 grid_param_skeleton.observation_model.type = "inpainting_without_noise";
-grid_param_skeleton.observation_model.masking_ratio = 0.2;
+grid_param_skeleton.observation_model.masking_ratio = [0.1, 0.2];
 grid_param_skeleton.observation_model.random_seed_signal_mask = [];
 
 grid_stride_coefficient_huber = 0.005;
@@ -32,12 +34,15 @@ range_param_skeleton.optimization.threshold_huber = linspace(0, 5, int64(5 / gri
 grid_param_skeleton.optimization.type = "proposal_7";
 grid_param_skeleton.optimization.coefficient_huber = range_hyperparameter_coefficient_huber(2:end-1);
 grid_param_skeleton.optimization.threshold_huber = range_param_skeleton.optimization.threshold_huber(2:end);
+% grid_param_skeleton.optimization.coefficient_huber = range_hyperparameter_coefficient_huber(2:4);
+% grid_param_skeleton.optimization.threshold_huber = range_param_skeleton.optimization.threshold_huber(2:4);
 
 % Define the range of random seeds for signal masking
-random_seed_signal_mask = 1:20;
+random_seed_signal_mask = 1:1;
 
 % Preallocate a cell array to store the optimal results
 optimal_grid_results = cell(numel(random_seed_signal_mask), 1);
+
 
 for i = 1:numel(random_seed_signal_mask)
 
@@ -62,8 +67,8 @@ nmse_optimal = compute_nmse_from_result(optimal_grid_result);
 averaged_nmse_optimal = mean(nmse_optimal, dimension_random_seed);
 
 % Get the minimum and argmin of the NMSEs
-[min_nmse_optimal, argmin_nmse_optimal] = min(averaged_nmse_optimal, [], dimension_random_seed);
+[min_nmse_optimal, argmin_nmse_optimal] = min(nmse_optimal, [], dimension_random_seed);
 
-min_nmse_optimal
-argmin_nmse_optimal
-averaged_nmse_optimal
+% Save the optimal grid result
+path_result = fullfile("projects\research\gsp\graph_signal_restoration\resources\data\images\optimal_grid_result_huber", "optimal_grid_results_11_20.mat");
+save_file(optimal_grid_results, path_result);

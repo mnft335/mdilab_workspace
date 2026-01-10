@@ -1,4 +1,5 @@
-function config_collection = generate_config_collection(param_collection, arg)
+% Create a collection of configurations based on the given parameter collection and optional arguments
+function config_collection = create_config_collection(param_collection, arg)
 
     % Create all configurations
     config_collection.config_true_graph = factory_config_true_graph(param_collection.true_graph, arg);

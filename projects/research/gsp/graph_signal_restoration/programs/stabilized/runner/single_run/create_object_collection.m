@@ -1,4 +1,5 @@
-function object_collection = generate_object_collection(config_collection)
+% Create all objects based on the given configuration collection
+function object_collection = create_object_collection(config_collection)
 
     % Generate all objects
     object_collection.true_graph = get_true_graph(config_collection.config_true_graph);

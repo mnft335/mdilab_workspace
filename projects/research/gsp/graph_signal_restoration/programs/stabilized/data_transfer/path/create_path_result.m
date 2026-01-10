@@ -1,6 +1,7 @@
+% Create a file path to the registry for storing the result based on the given configuration collection
 function path_result = create_path_result(config_collection)
 
-    % Get the path collection
+    % Get the path collection to registries
     path_collection = get_path_collection();
 
     % Create a path to the result directory

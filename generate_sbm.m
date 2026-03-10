@@ -1,50 +1,55 @@
-function [A, labels] = generate_sbm(cluster_sizes, P)
-% GENERATE_SBM Stochastic Block Model (SBM) に従うグラフを生成します。
-%
-% [入力]
-% cluster_sizes: 各クラスタ(ブロック)のノード数を含むベクトル (1 x K)
-% P: クラスタ間およびクラスタ内の接続確率行列 (K x K, 対称行列)
-%
-% [出力]
-% A: 生成されたグラフの隣接行列 (N x N)
-% labels: 各ノードが属するクラスタのラベル (N x 1)
+% This method generates a Stochastic Block Model (SBM) graph
+function [A, labels] = generate_sbm(cluster_sizes, connection_probabilities, random_seed)
 
-K = length(cluster_sizes);
-N = sum(cluster_sizes);
+    % Define the stream name for this generator internally
+    random_stream_name = 'hoge_sbm';
 
-% ラベルの割り当て
-labels = zeros(N, 1);
-idx = 1;
-for k = 1:K
-    labels(idx : idx + cluster_sizes(k) - 1) = k;
-    idx = idx + cluster_sizes(k);
-end
+    % Create a random stream using the provided seed and internal name
+    random_stream = create_random_stream(random_seed, random_stream_name);
 
-% 隣接行列の初期化
-A = zeros(N, N);
+    % Compute the total number of clusters and nodes
+    num_clusters = length(cluster_sizes);
+    num_nodes = sum(cluster_sizes);
 
-% クラスタ間・クラスタ内のエッジを確率 P(i,j) に基づき生成
-for i = 1:K
-    for j = i:K
-        % i番目とj番目のクラスタに属するノードのインデックス
-        idx_i = find(labels == i);
-        idx_j = find(labels == j);
+    % Assign a ground-truth cluster label to each node
+    labels = zeros(num_nodes, 1);
+    idx = 1;
 
-        % 確率行列に基づいてランダムな値を生成
-        if i == j
-            % クラスタ内エッジ (対称行列、自己ループなし)
-            R = rand(length(idx_i), length(idx_i));
-            block_A = double(R < P(i, j));
-            block_A = triu(block_A, 1); % 上三角行列を取得して無向グラフ化
-            block_A = block_A + block_A'; % 対称行列にする
-            A(idx_i, idx_i) = block_A;
-        else
-            % クラスタ間エッジ
-            R = rand(length(idx_i), length(idx_j));
-            block_A = double(R < P(i, j));
-            A(idx_i, idx_j) = block_A;
-            A(idx_j, idx_i) = block_A'; % 対称行列にする
+    for k = 1:num_clusters
+        labels(idx : idx + cluster_sizes(k) - 1) = k;
+        idx = idx + cluster_sizes(k);
+    end
+
+    % Initialize the adjacency matrix
+    A = zeros(num_nodes, num_nodes);
+
+    % Generate intra-cluster and inter-cluster edges based on probabilities
+    for i = 1:num_clusters
+        for j = i:num_clusters
+
+            idx_i = find(labels == i);
+            idx_j = find(labels == j);
+
+            if i == j
+
+                % Generate intra-cluster edges (upper triangular to avoid directed edges)
+                R = rand(random_stream, length(idx_i), length(idx_i));
+                block_A = double(R < connection_probabilities(i, j));
+                block_A = triu(block_A, 1);
+                block_A = block_A + block_A';
+                A(idx_i, idx_i) = block_A;
+
+            else
+
+                % Generate inter-cluster edges
+                R = rand(random_stream, length(idx_i), length(idx_j));
+                block_A = double(R < connection_probabilities(i, j));
+                A(idx_i, idx_j) = block_A;
+                A(idx_j, idx_i) = block_A';
+
+            end
+
         end
     end
-end
+
 end

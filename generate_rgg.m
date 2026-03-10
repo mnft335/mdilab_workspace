@@ -1,20 +1,19 @@
-function [A, coords] = generate_rgg(N, r)
-    % GENERATE_RGG Random Geometric Graph (RGG) を生成します。
-    %
-    % [入力]
-    % N: ノード数
-    % r: 接続距離のしきい値 (例: 0.1)
-    %
-    % [出力]
-    % A: 生成されたグラフの隣接行列 (N x N)
-    % coords: ノードの2次元座標 (N x 2)
-    
-    % [0, 1] x [0, 1] の空間にノードをランダム（一様分布）に配置
-    coords = rand(N, 2);
-    
-    % ユークリッド距離行列の計算
-    D = pdist2(coords, coords);
-    
-    % 距離が r 以下のノード間にエッジを張る (自己ループは除く)
-    A = double((D <= r) & ~eye(N));
+% This method generates a Random Geometric Graph (RGG)
+function [A, node_coordinates] = generate_rgg(num_nodes, distance_threshold, random_seed)
+
+    % Define the stream name for this generator internally
+    random_stream_name = 'hoge_rgg';
+
+    % Create a random stream using the provided seed and internal name
+    random_stream = create_random_stream(random_seed, random_stream_name);
+
+    % Randomly distribute nodes in a 2D space [0, 1] x [0, 1]
+    node_coordinates = rand(random_stream, num_nodes, 2);
+
+    % Calculate the pairwise Euclidean distance between nodes
+    D = pdist2(node_coordinates, node_coordinates);
+
+    % Connect nodes that are within the distance threshold
+    A = double((D <= distance_threshold) & ~eye(num_nodes));
+
 end

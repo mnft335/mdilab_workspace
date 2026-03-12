@@ -35,7 +35,45 @@ function config_adjacency_matrix = factory_config_adjacency_matrix(param, arg)
             
             % Create the configuration name
             config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
-                                                          "num_nodes=" + param.num_nodes};
+                                                          "num_nodes=" + string(param.num_nodes)};
+
+        case "rgg"
+
+            % Generate a connected Random Geometric Graph
+            [A, coords] = generate_connected_rgg(param.num_nodes, param.distance_threshold, param.random_seed);
+            config_adjacency_matrix.generate_adjacency_matrix = @() A;
+            config_adjacency_matrix.coordinates = coords;
+            
+            % Create the configuration name
+            config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
+                                                          "num_nodes=" + string(param.num_nodes), ...
+                                                          "distance_threshold=" + string(param.distance_threshold), ...
+                                                          "random_seed=" + string(param.random_seed)};
+
+        case "sbm"
+
+            % Generate a connected Stochastic Block Model graph
+            [A, ~] = generate_connected_sbm(param.cluster_sizes, param.connection_probabilities, param.random_seed);
+            config_adjacency_matrix.generate_adjacency_matrix = @() A;
+            config_adjacency_matrix.coordinates = []; % No inherently meaningful 2D coordinates for SBM
+            
+            % Create the configuration name
+            config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
+                                                          "num_clusters=" + string(length(param.cluster_sizes)), ...
+                                                          "random_seed=" + string(param.random_seed)};
+
+        case "ba"
+
+            % Generate a connected Barabasi-Albert graph
+            A = generate_connected_ba(param.num_nodes, param.num_initial_nodes, param.num_edges_to_add, param.random_seed);
+            config_adjacency_matrix.generate_adjacency_matrix = @() A;
+            config_adjacency_matrix.coordinates = [];
+            
+            % Create the configuration name
+            config_adjacency_matrix.configuration_name = {"adjacency_matrix=" + param.type, ...
+                                                          "num_nodes=" + string(param.num_nodes), ...
+                                                          "num_initial_nodes=" + string(param.num_initial_nodes), ...
+                                                          "random_seed=" + string(param.random_seed)};
 
         otherwise
 

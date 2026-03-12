@@ -1,4 +1,13 @@
-% This method generates a Random Geometric Graph (RGG)
+% GENERATE_RGG Generates a Random Geometric Graph (RGG)
+%
+% Inputs:
+%   num_nodes:          Total number of nodes to generate
+%   distance_threshold: Distance within which two nodes will be connected
+%   random_seed:        Seed for the random number stream
+%
+% Outputs:
+%   A:                  Adjacency matrix of the RGG
+%   node_coordinates:   Spatial coordinates of the nodes in 2D space [0,1]x[0,1]
 function [A, node_coordinates] = generate_rgg(num_nodes, distance_threshold, random_seed)
 
     % Define the stream name for this generator internally
